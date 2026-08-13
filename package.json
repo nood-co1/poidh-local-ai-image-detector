@@ -17,8 +17,10 @@
     "gate:full": "bash scripts/gate-full.sh",
     "gate:build": "bash scripts/gate-build.sh",
     "gate:journey": "bash scripts/gate-journey.sh",
+    "check:evidence": "node scripts/check-evidence.mjs",
     "test:e2e:offline": "bash scripts/gate-full.d/15-offline-unit.sh",
     "test:e2e:proxy-ba": "bash scripts/gate-full.d/30-proxy-ba.sh",
+    "test:e2e:keystone": "bash -c 'export CI=1 POIDH_GIT_SHA=$(git rev-parse HEAD); if command -v xvfb-run >/dev/null; then xvfb-run -a npx playwright test e2e/keystone.spec.ts --retries=0; else npx playwright test e2e/keystone.spec.ts --retries=0; fi'",
     "eval:proxy": "tsx eval/eval_proxy.ts",
     "test:mutant-constant": "bash scripts/mutant-constant-model.sh",
     "test:model": "python3 model/test_no_proxy_leak.py"

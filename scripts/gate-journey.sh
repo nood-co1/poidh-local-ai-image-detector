@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Live smoke journey (GATE_LIVE_SMOKE_CMD / section 3.3 AC-JOURNEY).
+# Live smoke journey (GATE_LIVE_SMOKE_CMD / section 3.3 AC-JOURNEY + 4.3 I12 keystone).
 # One-shot, non-interactive. Does not print env secrets.
 #
 # JOB-SCAN   — autoscan same-origin + cross-origin (+ threshold/pause already in 20-e2e)
 # JOB-OFFLINE — offline inference proof
 # JOB-PRIVACY — service-worker-inclusive privacy HAR allowlist
+# JOB-KEYSTONE (4.3) — Monday path e2e/keystone.spec.ts on one clean profile
+# AC-EVID — scripts/check-evidence.mjs (proxy-ba SHA = HEAD; no skipped REQUIRED)
 #
-# Later sections (4.3 keystone) may append steps; do not rewrite as a stub.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -35,6 +36,10 @@ fi
 export POIDH_ONNX_CACHE="${ONNX_CACHE}"
 export CI="${CI:-1}"
 
+GIT_SHA="$(git rev-parse HEAD)"
+export POIDH_GIT_SHA="${GIT_SHA}"
+echo "gate-journey: product SHA ${GIT_SHA}"
+
 run_pw() {
   local label="$1"
   shift
@@ -59,4 +64,24 @@ run_pw "JOB-SCAN (autoscan + threshold + pause)" \
 # JOB-PRIVACY-01 (soul 6)
 run_pw "JOB-PRIVACY (e2e/privacy-har.spec.ts)" e2e/privacy-har.spec.ts
 
-echo "gate-journey: OK (JOB-OFFLINE + JOB-SCAN + JOB-PRIVACY)"
+# Soul 7 certificate must exist for HEAD before keystone + check-evidence.
+# Full proxy-ba is owned by gate-full.d/30-proxy-ba.sh; re-use if present,
+# otherwise produce it here so AC-EVID is one-SHA consistent.
+EVIDENCE_FILE="${EVIDENCE_DIR}/proxy-ba-${GIT_SHA}.json"
+if [[ ! -f "${EVIDENCE_FILE}" ]]; then
+  echo "gate-journey: proxy-ba missing for HEAD — running 30-proxy-ba.sh"
+  bash "${ROOT}/scripts/gate-full.d/30-proxy-ba.sh"
+fi
+if [[ ! -f "${EVIDENCE_FILE}" ]]; then
+  echo "gate-journey: FAIL — still missing ${EVIDENCE_FILE}" >&2
+  exit 1
+fi
+
+# JOB-KEYSTONE / I12 Monday path (section 4.3) — clean profile, real offscreen
+run_pw "JOB-KEYSTONE (e2e/keystone.spec.ts)" e2e/keystone.spec.ts
+
+# AC-EVID: no skipped REQUIRED; evidence SHA matches HEAD
+echo "gate-journey: check-evidence.mjs"
+node "${ROOT}/scripts/check-evidence.mjs"
+
+echo "gate-journey: OK (JOB-OFFLINE + JOB-SCAN + JOB-PRIVACY + JOB-KEYSTONE + AC-EVID)"
