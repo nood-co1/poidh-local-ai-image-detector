@@ -96,8 +96,10 @@ void tryLoadDefaultModel();
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   const msg = message as TargetedMessage;
-  // Only handle messages addressed to the offscreen document (or legacy untargeted ANALYZE_*).
-  if (msg.target !== undefined && msg.target !== TARGET) {
+  // SW is the sole router: only handle messages explicitly addressed here.
+  // Untargeted ANALYZE_IMAGE from content/debug would otherwise be handled both
+  // here and again via the SW relay, racing concurrent InferenceSession.run().
+  if (msg.target !== TARGET) {
     return false;
   }
 

@@ -37,6 +37,18 @@ describe('offscreen MV3 wiring', () => {
     expect(src).not.toMatch(/@xenova\/transformers|transformers\.js|image-classification/);
   });
 
+  it('offscreen requires target===offscreen so SW relay is the only ANALYZE_IMAGE path', () => {
+    // Untargeted ANALYZE_IMAGE would be delivered to both offscreen and SW;
+    // SW re-sends with target:'offscreen', racing concurrent ORT session.run().
+    const src = readFileSync(join(root, 'extension/offscreen.ts'), 'utf8');
+    expect(src).toMatch(/msg\.target\s*!==\s*TARGET/);
+    // Must not accept untargeted (legacy) messages for inference.
+    expect(src).not.toMatch(/target\s*!==\s*undefined\s*&&\s*msg\.target\s*!==\s*TARGET/);
+    const sw = readFileSync(join(root, 'extension/service_worker.ts'), 'utf8');
+    expect(sw).toMatch(/target:\s*OFFSCREEN_TARGET/);
+    expect(sw).toMatch(/ANALYZE_IMAGE/);
+  });
+
   it('service worker creates offscreen document, relays ANALYZE_IMAGE, and runs setup', () => {
     const src = readFileSync(join(root, 'extension/service_worker.ts'), 'utf8');
     expect(src).toMatch(/chrome\.offscreen\.createDocument/);
