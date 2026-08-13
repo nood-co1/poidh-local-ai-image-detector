@@ -3,8 +3,12 @@ import { THRESHOLD } from '../src/threshold.js';
 import {
   BA_MIN,
   SKIP_RATE_MAX,
+  buildProxyBaEvidence,
+  computeFamilyMetrics,
   computeProxyMetrics,
+  constantModelWitnessRows,
   decide,
+  proxyBaEvidenceFilename,
   type ScoredRow,
 } from './scorer.js';
 
@@ -119,5 +123,77 @@ describe('computeProxyMetrics', () => {
     const m = computeProxyMetrics([]);
     expect(m.attempted).toBe(0);
     expect(m.pass).toBe(false);
+  });
+});
+
+describe('computeFamilyMetrics', () => {
+  it('reports per-family BA slices', () => {
+    const rows: ScoredRow[] = [
+      { label: 'ai', family: 'sdxl', outcome: { kind: 'scored', score: 0.9 } },
+      { label: 'ai', family: 'sdxl', outcome: { kind: 'scored', score: 0.1 } },
+      { label: 'real', family: 'coco-val2017', outcome: { kind: 'scored', score: 0.1 } },
+      {
+        label: 'real',
+        family: 'coco-val2017',
+        outcome: { kind: 'skip', reason: 'skip_small' },
+      },
+    ];
+    const fams = computeFamilyMetrics(rows);
+    expect(fams.map((f) => f.family)).toEqual(['coco-val2017', 'sdxl']);
+    const sdxl = fams.find((f) => f.family === 'sdxl')!;
+    expect(sdxl.tpr).toBeCloseTo(0.5);
+    expect(sdxl.attempted).toBe(2);
+  });
+});
+
+describe('buildProxyBaEvidence', () => {
+  it('names source and embeds BA/skip/per-family', () => {
+    const rows: ScoredRow[] = [
+      { label: 'ai', family: 'sdxl', outcome: { kind: 'scored', score: 0.9 } },
+      { label: 'real', family: 'coco-val2017', outcome: { kind: 'scored', score: 0.1 } },
+    ];
+    const ev = buildProxyBaEvidence({
+      gitSha: 'deadbeef',
+      rows,
+      source: 'extension-page-rendered',
+      modelSha256: 'abc',
+      writtenAt: '2026-08-13T00:00:00.000Z',
+    });
+    expect(ev.section).toBe('4.2');
+    expect(ev.gitSha).toBe('deadbeef');
+    expect(ev.source).toBe('extension-page-rendered');
+    expect(ev.threshold).toBe(THRESHOLD);
+    expect(ev.ba).toBeCloseTo(1.0);
+    expect(ev.pass).toBe(true);
+    expect(ev.perFamily.length).toBe(2);
+    expect(ev.modelSha256).toBe('abc');
+  });
+});
+
+describe('G-FALSE-GREEN-WITNESS (constant-0.5 model)', () => {
+  it('constant 0.5 scores fail the BA gate', () => {
+    // 50/50 labels, every score 0.5 → always real → TPR=0 TNR=1 BA=0.5
+    const labels = Array.from({ length: 20 }, (_, i) =>
+      i < 10 ? ('ai' as const) : ('real' as const),
+    );
+    const rows = constantModelWitnessRows(labels, 0.5);
+    const m = computeProxyMetrics(rows);
+    expect(m.skipRate).toBe(0);
+    expect(m.ba).toBeCloseTo(0.5);
+    expect(m.ba).toBeLessThan(BA_MIN);
+    expect(m.pass).toBe(false);
+  });
+});
+
+describe('proxyBaEvidenceFilename', () => {
+  it('uses product git sha (AC-SHA)', () => {
+    expect(proxyBaEvidenceFilename('40034f106d25da9472578fb4d4826f3e9101f5b7')).toBe(
+      'proxy-ba-40034f106d25da9472578fb4d4826f3e9101f5b7.json',
+    );
+    expect(proxyBaEvidenceFilename('abc1234')).toBe('proxy-ba-abc1234.json');
+  });
+
+  it('rejects non-hex sha', () => {
+    expect(() => proxyBaEvidenceFilename('../evil')).toThrow(/invalid git sha/);
   });
 });
