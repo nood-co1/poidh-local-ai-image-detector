@@ -52,6 +52,3 @@ playwright-report/
 blob-report/
 evidence/.pw-profile-*/
 evidence/.cache/
-
-# 4.1 calibrated ONNX blobs live on the box; SHA pins are in weights/manifest.json calibratedExports
-weights/onnx/*.onnx
