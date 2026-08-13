@@ -161,6 +161,20 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
+  if (msg.type === 'CLEAR_SESSION') {
+    void clearSession()
+      .then(() => sendResponse({ type: 'CLEAR_SESSION_RESULT', ok: true }))
+      .catch((err: unknown) => {
+        const detail = err instanceof Error ? err.message : String(err);
+        sendResponse({
+          type: 'CLEAR_SESSION_RESULT',
+          ok: false,
+          error: detail,
+        });
+      });
+    return true;
+  }
+
   if (msg.type === 'ANALYZE_IMAGE') {
     const parsed = parseAnalyzeImageMessage(message);
     if (!parsed) {

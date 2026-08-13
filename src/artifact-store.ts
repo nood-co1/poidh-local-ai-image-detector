@@ -807,6 +807,28 @@ export async function loadProductionOnnxBytes(
 }
 
 /**
+ * Delete all pinned artifacts + the models_ready marker from local storage.
+ * Used by offline e2e (AC-MISS) and recovery paths. Does not touch the network.
+ */
+export async function clearAllArtifacts(
+  options: {
+    storage?: ArtifactStorage;
+    manifest?: Manifest;
+  } = {},
+): Promise<{ cleared: string[]; backend: ArtifactStatus['backend'] }> {
+  const manifest = options.manifest ?? DEFAULT_MANIFEST;
+  const storage = options.storage ?? (await createDefaultStorage());
+  const cleared: string[] = [];
+  for (const artifact of manifest.artifacts) {
+    await storage.delete(artifact.id);
+    cleared.push(artifact.id);
+  }
+  await storage.delete(READY_MARKER_ID);
+  cleared.push(READY_MARKER_ID);
+  return { cleared, backend: storage.backend };
+}
+
+/**
  * Build an ORT `wasmPaths` prefix or map from stored wasm artifacts.
  * Creates blob: URLs that the offscreen document can load without network.
  *

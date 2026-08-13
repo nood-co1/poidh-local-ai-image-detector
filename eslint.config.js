@@ -14,6 +14,9 @@ export default tseslint.config(
       'evidence/**',
       '.pipeline/**',
       'package-lock.json',
+      // Built/copied static stubs and test-only debug companion.
+      'extension/offscreen.js',
+      'extension/debug.js',
     ],
   },
   js.configs.recommended,

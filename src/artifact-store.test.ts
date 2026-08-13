@@ -15,7 +15,9 @@ import {
   MemoryArtifactStorage,
   MIN_PRODUCTION_ONNX_BYTES,
   NetworkFetchRefusedError,
+  READY_MARKER_ID,
   ShaMismatchError,
+  clearAllArtifacts,
   ensureArtifacts,
   getArtifactStatus,
   getProductionOnnx,
@@ -402,5 +404,39 @@ describe('getArtifactStatus', () => {
     });
     expect(status.ready).toBe(false);
     expect(status.modelsReadyMarker).toBe(false);
+  });
+});
+
+describe('clearAllArtifacts (AC-MISS helper)', () => {
+  it('removes artifacts and ready marker so isModelsReady is false', async () => {
+    const onnx = await bigOnnx('clear-me');
+    const url = 'https://huggingface.co/test/onnx/model.onnx';
+    const manifest = makeManifest([
+      {
+        id: 'onnx/model.onnx',
+        role: 'production',
+        kind: 'onnx',
+        url,
+        sha256: onnx.sha256,
+        bytes: onnx.data.byteLength,
+      },
+    ]);
+    const storage = new MemoryArtifactStorage();
+    const { fetch } = trackingFetch(new Map([[url, onnx.data]]));
+    const setup = await ensureArtifacts({
+      manifest,
+      storage,
+      fetch,
+      resolveUrl: (a) => a.url,
+    });
+    expect(setup.ready).toBe(true);
+    expect(await isModelsReady({ storage, manifest })).toBe(true);
+
+    const cleared = await clearAllArtifacts({ storage, manifest });
+    expect(cleared.cleared).toContain('onnx/model.onnx');
+    expect(cleared.cleared).toContain(READY_MARKER_ID);
+    expect(await storage.has('onnx/model.onnx')).toBe(false);
+    expect(await storage.has(READY_MARKER_ID)).toBe(false);
+    expect(await isModelsReady({ storage, manifest })).toBe(false);
   });
 });

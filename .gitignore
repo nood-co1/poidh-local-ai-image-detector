@@ -41,3 +41,10 @@ Thumbs.db
 # Local tooling venvs
 .venv*
 
+# Playwright / e2e runtime
+test-results/
+playwright-report/
+blob-report/
+evidence/.pw-profile-*/
+evidence/.cache/
+

@@ -44,7 +44,39 @@ describe('offscreen MV3 wiring', () => {
     expect(src).toMatch(/offscreen\.html/);
     expect(src).toMatch(/SETUP_ARTIFACTS/);
     expect(src).toMatch(/ARTIFACT_STATUS/);
+    expect(src).toMatch(/CLEAR_ARTIFACTS/);
+    expect(src).toMatch(/SCAN_TAB/);
     expect(src).toMatch(/from ['"]\.\/setup\.js['"]/);
+  });
+
+  it('manifest registers content script for page pixel scan (2.3)', () => {
+    const manifest = readFileSync(join(root, 'extension/manifest.json'), 'utf8');
+    const json = JSON.parse(manifest) as {
+      content_scripts?: Array<{ js?: string[]; matches?: string[] }>;
+      permissions?: string[];
+    };
+    expect(json.permissions).toContain('tabs');
+    expect(json.content_scripts?.length).toBeGreaterThanOrEqual(1);
+    const cs = json.content_scripts![0]!;
+    expect(cs.js).toContain('content.js');
+    expect(cs.matches?.some((m) => m.includes('http'))).toBe(true);
+  });
+
+  it('content script uses createImageBitmap on loaded img (no src re-GET)', () => {
+    const src = readFileSync(join(root, 'extension/content.ts'), 'utf8');
+    expect(src).toMatch(/createImageBitmap/);
+    expect(src).toMatch(/SCAN_PAGE/);
+    expect(src).toMatch(/ANALYZE_IMAGE/);
+    // Must send raw image pixels, not rely on src fetch for the primary path.
+    expect(src).toMatch(/image:\s*\{/);
+    expect(src).not.toMatch(/fetch\s*\(\s*img\.src/);
+  });
+
+  it('debug.html is test-only with a single Infer button', () => {
+    const html = readFileSync(join(root, 'extension/debug.html'), 'utf8');
+    expect(html).toMatch(/id=["']infer["']/);
+    expect(html).toMatch(/debug\.js/);
+    expect(html).toMatch(/test only|not soul-3/i);
   });
 });
 

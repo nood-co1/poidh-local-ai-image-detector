@@ -4,6 +4,7 @@
  * runs one-time artifact setup (OPFS/Cache API — never chrome.storage weights).
  */
 
+import { clearAllArtifacts } from '../src/artifact-store.js';
 import { querySetupStatus, runSetup } from './setup.js';
 
 const OFFSCREEN_URL = 'offscreen.html';
@@ -206,6 +207,63 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           scanId: typeof raw.scanId === 'string' ? raw.scanId : '',
           imageId: typeof raw.imageId === 'string' ? raw.imageId : '',
           code: 'INFER',
+          error: detail,
+        });
+      });
+    return true;
+  }
+
+  /**
+   * Wipe OPFS/Cache artifacts and drop the offscreen session (e2e AC-MISS).
+   * Does not network-fetch. After this, ANALYZE_IMAGE must fail closed.
+   */
+  if (msg.type === 'CLEAR_ARTIFACTS') {
+    void (async () => {
+      const cleared = await clearAllArtifacts();
+      try {
+        await sendToOffscreen({ type: 'CLEAR_SESSION' });
+      } catch {
+        /* offscreen may not exist yet */
+      }
+      sendResponse({
+        type: 'CLEAR_ARTIFACTS_RESULT',
+        ok: true,
+        ...cleared,
+      });
+    })().catch((err: unknown) => {
+      const detail = err instanceof Error ? err.message : String(err);
+      sendResponse({
+        type: 'CLEAR_ARTIFACTS_RESULT',
+        ok: false,
+        error: detail,
+      });
+    });
+    return true;
+  }
+
+  /**
+   * Ask a tab's content script to scan already-loaded <img> pixels (soul 3).
+   * Used by e2e and later by the popup; does not re-GET image URLs.
+   */
+  if (msg.type === 'SCAN_TAB') {
+    const tabId = (message as { tabId?: unknown }).tabId;
+    const scanId = (message as { scanId?: unknown }).scanId;
+    if (typeof tabId !== 'number' || typeof scanId !== 'string' || !scanId) {
+      sendResponse({
+        type: 'SCAN_TAB_RESULT',
+        ok: false,
+        error: 'tabId (number) and scanId (string) required',
+      });
+      return false;
+    }
+    void chrome.tabs
+      .sendMessage(tabId, { type: 'SCAN_PAGE', scanId })
+      .then((result) => sendResponse(result))
+      .catch((err: unknown) => {
+        const detail = err instanceof Error ? err.message : String(err);
+        sendResponse({
+          type: 'SCAN_TAB_RESULT',
+          ok: false,
           error: detail,
         });
       });

@@ -31,11 +31,27 @@ npx esbuild \
   --conditions=onnxruntime-web-use-extern-wasm \
   --outfile="${DIST}/offscreen.js"
 
+# Content script: displayed-pixel scan path (2.3; overlay lands in 3.1).
+npx esbuild \
+  extension/content.ts \
+  --bundle \
+  --format=iife \
+  --platform=browser \
+  --target=chrome120 \
+  --outfile="${DIST}/content.js"
+
 # Copy static extension assets unchanged.
 cp extension/manifest.json "${DIST}/manifest.json"
 cp extension/popup.html "${DIST}/popup.html"
 cp extension/popup.js "${DIST}/popup.js"
 cp extension/offscreen.html "${DIST}/offscreen.html"
+cp extension/debug.html "${DIST}/debug.html"
+cp extension/debug.js "${DIST}/debug.js"
+cp extension/harness.html "${DIST}/harness.html"
+
+# Fixture images for debug.html (test only) + same-origin extension packaging.
+mkdir -p "${DIST}/fixtures/assets"
+cp eval/fixtures/assets/*.png "${DIST}/fixtures/assets/"
 
 # Pinned artifact manifest + vendored CF config (num_labels=1 assert).
 mkdir -p "${DIST}/weights"
@@ -62,7 +78,12 @@ test -f "${DIST}/popup.html"
 test -f "${DIST}/popup.js"
 test -f "${DIST}/offscreen.html"
 test -f "${DIST}/offscreen.js"
+test -f "${DIST}/content.js"
+test -f "${DIST}/debug.html"
+test -f "${DIST}/debug.js"
+test -f "${DIST}/harness.html"
 test -f "${DIST}/weights/manifest.json"
+test -f "${DIST}/fixtures/assets/real_a.png"
 
 # AC-CSP: wasm-unsafe-eval must be present for ORT wasm.
 grep -q "wasm-unsafe-eval" "${DIST}/manifest.json"

@@ -16,6 +16,13 @@
     "resolveJsonModule": true,
     "types": ["node", "chrome"]
   },
-  "include": ["src/**/*.ts", "extension/**/*.ts", "eval/**/*.ts", "weights/**/*.json"],
+  "include": [
+    "src/**/*.ts",
+    "extension/**/*.ts",
+    "eval/**/*.ts",
+    "e2e/**/*.ts",
+    "playwright.config.ts",
+    "weights/**/*.json"
+  ],
   "exclude": ["node_modules", "dist"]
 }

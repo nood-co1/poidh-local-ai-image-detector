@@ -15,10 +15,12 @@
     "gate:typecheck": "bash scripts/gate-typecheck.sh",
     "gate:test": "bash scripts/gate-test.sh",
     "gate:full": "bash scripts/gate-full.sh",
-    "gate:build": "bash scripts/gate-build.sh"
+    "gate:build": "bash scripts/gate-build.sh",
+    "test:e2e:offline": "bash scripts/gate-full.d/15-offline-unit.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
     "@types/chrome": "^0.0.287",
     "@types/node": "^20.17.0",
     "@types/sharp": "^0.31.1",
