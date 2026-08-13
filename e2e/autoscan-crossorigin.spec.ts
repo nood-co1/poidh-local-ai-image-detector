@@ -331,6 +331,14 @@ function isNumericBadge(t: string): boolean {
   return /^(0|1)(\.\d+)?(\s+(ai|real))?$/i.test(t);
 }
 
+/** Parse leading score from badge text ("0.64 real" → 0.64). */
+function parseBadgeScore(t: string): number | null {
+  const m = t.trim().match(/^(0|1)(\.\d+)?/);
+  if (!m) return null;
+  const n = Number(m[0]);
+  return Number.isFinite(n) ? n : null;
+}
+
 test.describe('3.1 autoscan cross-origin (AC-CORS)', () => {
   test('AC-CORS: dual-origin hotlink scores via pixel or GET fallback', async ({
     context,
@@ -384,9 +392,10 @@ test.describe('3.1 autoscan cross-origin (AC-CORS)', () => {
     ).toBeGreaterThanOrEqual(4);
 
     for (const t of numeric) {
-      const n = Number(t);
-      expect(n).toBeGreaterThanOrEqual(0);
-      expect(n).toBeLessThanOrEqual(1);
+      const n = parseBadgeScore(t);
+      expect(n).not.toBeNull();
+      expect(n!).toBeGreaterThanOrEqual(0);
+      expect(n!).toBeLessThanOrEqual(1);
     }
 
     // Explicit SCAN_TAB: must not mass skip_cross_origin when GET works.
