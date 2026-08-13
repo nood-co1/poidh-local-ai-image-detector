@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "POIDH Local AI Image Detector",
+  "version": "0.1.0",
+  "description": "On-device AI vs Real image detector. Scores displayed page images locally after one-time setup.",
+  "action": {
+    "default_title": "POIDH Local AI Image Detector",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "service_worker.js",
+    "type": "module"
+  },
+  "permissions": [
+    "offscreen",
+    "storage",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ]
+}

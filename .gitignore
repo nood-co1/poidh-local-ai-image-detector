@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build output and caches
+dist/
+*.tsbuildinfo
+.cache/
+.turbo/
+.eslintcache
+
+# Section Runner / pipeline runtime (not product)
+.pipeline/
+
+# Secrets and credentials
+.env
+.env.*
+auth.env
+*.pem
+
+# Control-plane / programme artefacts (must not enter product tree)
+CLAUDE.md
+docs/00_CONSTITUTION.md
+docs/02_LIVABILITY_MATRIX.md
+docs/REQUIREMENTS_MATRIX.md
+docs/HYPOTHESIS_REGISTER.md
+BUILD_CHECKLIST.md
+evidence/reviews/
+evidence/*.json
+ACTIVE-RUNS*
+*-engineering-standards.md
+aid-*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/

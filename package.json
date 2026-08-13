@@ -1,0 +1,32 @@
+{
+  "name": "poidh-local-ai-image-detector",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MIT Chrome MV3 extension: on-device AI vs Real image scoring after one-time setup.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "bash scripts/gate-build.sh",
+    "test": "bash scripts/gate-test.sh",
+    "typecheck": "bash scripts/gate-typecheck.sh",
+    "gate:typecheck": "bash scripts/gate-typecheck.sh",
+    "gate:test": "bash scripts/gate-test.sh",
+    "gate:full": "bash scripts/gate-full.sh",
+    "gate:build": "bash scripts/gate-build.sh"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/chrome": "^0.0.287",
+    "@types/node": "^20.17.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.8.1",
+    "globals": "^17.11.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.67.0",
+    "vitest": "^4.1.10"
+  }
+}

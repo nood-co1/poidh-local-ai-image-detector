@@ -1,0 +1,82 @@
+# POIDH Local AI Image Detector
+
+MIT-licensed Chrome **Manifest V3** extension that scores already-displayed page images **on-device** (AI vs Real at threshold `0.65`) after a one-time public-weight download.
+
+This repository currently ships the **workspace harness**: loadable MV3 shell, threshold module, one-shot CI gates, and a `dist/` build. Inference, weights, and overlays arrive in later sections.
+
+## Requirements
+
+- Google Chrome (or Chromium) recent enough for MV3
+- Node.js 20+ (for typecheck / unit tests; **not** required to load the extension)
+
+No local server is required to install or run the extension.
+
+## Install from source (load unpacked)
+
+Canonical path (soul 8 / repro): produce a loadable package, then load it in Chrome.
+
+```bash
+npm ci
+npm run build    # writes dist/ (JS Chrome can load; not raw TypeScript)
+```
+
+1. Open Chrome and go to `chrome://extensions`.
+2. Enable **Developer mode** (toggle in the top-right).
+3. Click **Load unpacked**.
+4. Select the **`dist/`** directory (the folder that contains `manifest.json` after build).
+5. Confirm the extension appears in the list. Click its action (toolbar icon) — the popup should say **models not ready**.
+
+No local server is required.
+
+### What you should see
+
+| Check | Expected |
+|-------|----------|
+| Extension list | Name **POIDH Local AI Image Detector**, version **0.1.0**, no errors |
+| Popup | Text: **models not ready** |
+| Pages | No badge / overlay yet (not implemented yet) |
+
+### Failure class: Chrome rejects the package
+
+If Chrome refuses to load the extension, the error is usually one of:
+
+- **Manifest file is missing or unreadable** — you selected the repo root or `extension/` instead of **`dist/`** after `npm run build`.
+- **Required value 'manifest_version' is missing or invalid** — `manifest.json` is not MV3 or is corrupt.
+- **Service worker registration failed** — `background.service_worker` path does not resolve to a JS file in `dist/`.
+- **Permission / host permission errors** — keys under `permissions` / `host_permissions` are misspelled or unsupported.
+
+Fix the path or manifest keys and use **Reload** on `chrome://extensions`.
+
+## Decision threshold
+
+The only source of the decision threshold is:
+
+```ts
+// src/threshold.ts
+export const THRESHOLD = 0.65;
+```
+
+UI, scorer, and docs must import this constant. Do not duplicate `0.65` elsewhere.
+
+## Develop
+
+```bash
+npm ci
+npm run build            # esbuild: extension + src → dist/
+npm run gate:typecheck   # tsc --noEmit (one-shot)
+npm run gate:test        # vitest run + eslint + docs-consistency (one-shot)
+npm run gate:full        # typecheck + staged scripts/gate-full.d/*
+npm test                 # same as gate:test
+```
+
+All gates are foreground, non-interactive, and never use watch mode.
+
+## License
+
+MIT — see [LICENSE](./LICENSE).
+
+## Security
+
+- No secrets in the repository.
+- Credentials patterns (`.env`, `auth.env`, `*.pem`) are gitignored.
+- Do not commit model weights with private keys or precomputed golden scores.
