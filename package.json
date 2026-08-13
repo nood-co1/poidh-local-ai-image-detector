@@ -16,6 +16,7 @@
     "gate:test": "bash scripts/gate-test.sh",
     "gate:full": "bash scripts/gate-full.sh",
     "gate:build": "bash scripts/gate-build.sh",
+    "gate:journey": "bash scripts/gate-journey.sh",
     "test:e2e:offline": "bash scripts/gate-full.d/15-offline-unit.sh"
   },
   "devDependencies": {
