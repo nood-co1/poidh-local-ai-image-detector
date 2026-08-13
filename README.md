@@ -2,12 +2,14 @@
 
 MIT-licensed Chrome **Manifest V3** extension that scores already-displayed page images **on-device** (AI vs Real at threshold `0.65`) after a one-time public-weight download.
 
-This repository currently ships the **workspace harness**: loadable MV3 shell, threshold module, one-shot CI gates, and a `dist/` build. Inference, weights, and overlays arrive in later sections.
+**Public repository:** https://github.com/nood-co1/poidh-local-ai-image-detector
+
+Package name: `poidh-local-ai-image-detector`. Maintainer build and install docs: [docs/BUILD.md](./docs/BUILD.md), [docs/INSTALL.md](./docs/INSTALL.md).
 
 ## Requirements
 
 - Google Chrome (or Chromium) recent enough for MV3
-- Node.js 20+ (for typecheck / unit tests; **not** required to load the extension)
+- Node.js 20+ (for typecheck / unit tests; **not** required to load the extension once built)
 
 No local server is required to install or run the extension.
 
@@ -26,7 +28,7 @@ npm run build    # writes dist/ (JS Chrome can load; not raw TypeScript)
 4. Select the **`dist/`** directory (the folder that contains `manifest.json` after build).
 5. Confirm the extension appears in the list. Click its action (toolbar icon) — the popup should say **models not ready** until you run setup.
 
-No local server is required.
+No local server is required. Full steps: [docs/INSTALL.md](./docs/INSTALL.md).
 
 ### First-run model setup
 
@@ -81,12 +83,16 @@ npm test                 # same as gate:test
 
 All gates are foreground, non-interactive, and never use watch mode.
 
+Compile details: [docs/BUILD.md](./docs/BUILD.md).
+
 ## License
 
 MIT — see [LICENSE](./LICENSE).
 
 ## Security
 
-- No secrets in the repository.
-- Credentials patterns (`.env`, `auth.env`, `*.pem`) are gitignored.
+- No secrets in the repository. `scripts/check-secrets.sh` fails on common token patterns.
+- Credential patterns (`.env`, `auth.env`, `*.pem`) are gitignored.
+- Packaged `dist/` must not contain proxy/golden bench hashes or precomputed scores (`e2e/anticheat.spec.ts`).
+- Result / score cache is empty at first install; scores come only from live on-device inference.
 - Do not commit model weights with private keys or precomputed golden scores.

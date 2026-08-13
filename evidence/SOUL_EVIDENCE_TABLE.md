@@ -18,7 +18,7 @@
 | SOUL-6 | REQUIRED | PASS | `e2e/privacy-har.spec.ts`; `e2e/keystone.spec.ts`; `src/allowlist.ts` | JOB-PRIVACY-01 — SW-inclusive HAR online segment |
 | SOUL-7 | REQUIRED | PASS | `evidence/proxy-ba-<HEAD>.json`; `e2e/proxy-ba.spec.ts`; `e2e/keystone.spec.ts` | JOB-PROXY-01 — extension BA cert; SHA must = HEAD |
 | SOUL-8 | REQUIRED | PASS | `scripts/gate-build.sh`; `scripts/gate-full.sh`; `package.json` | JOB-REPRO-01 — npm ci && build → dist/ |
-| SOUL-9 | OPEN | OPEN | `e2e/anticheat.spec.ts` | JOB-ANTICHEAT-01 — owner 5.1; not REQUIRED until 5.1 |
+| SOUL-9 | REQUIRED | PASS | `e2e/anticheat.spec.ts`; `scripts/check-secrets.sh`; `docs/INSTALL.md`; `LICENSE` | JOB-ANTICHEAT-01 — no bench hashes/scores in dist; empty cache at install; MIT + public GitHub |
 
 ## Log files written by gates
 

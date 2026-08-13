@@ -108,12 +108,26 @@ else
   status="fail"
 fi
 
+# --- AC-SEC: no credential values (section 5.1) ---
+secrets_ok=0
+set +e
+secrets_out="$(bash scripts/check-secrets.sh 2>&1)"
+secrets_rc=$?
+set -e
+if [[ ${secrets_rc} -eq 0 ]]; then
+  secrets_ok=1
+else
+  echo "${secrets_out}" >&2
+  secrets_ok=0
+  status="fail"
+fi
+
 # --- evidence JSON (counts only; never dump env) ---
 node --input-type=module -e '
   import { writeFileSync } from "node:fs";
-  const [out, status, unitPassed, unitFailed, eslintOk, docsOk, notStubOk, noDummyOk] = process.argv.slice(1);
+  const [out, status, unitPassed, unitFailed, eslintOk, docsOk, notStubOk, noDummyOk, secretsOk] = process.argv.slice(1);
   const payload = {
-    section: "2.2",
+    section: "5.1",
     gate: "gate:test",
     status,
     generatedAt: new Date().toISOString(),
@@ -125,12 +139,13 @@ node --input-type=module -e '
       docsConsistencyOk: Number(docsOk),
       gateFullNotStubOk: Number(notStubOk),
       noDummyOnnxOk: Number(noDummyOk),
+      secretsOk: Number(secretsOk),
     },
   };
   writeFileSync(out, JSON.stringify(payload, null, 2) + "\n", "utf8");
-' "${EVIDENCE_DIR}/gate-test.json" "${status}" "${unit_passed}" "${unit_failed}" "${eslint_ok}" "${docs_ok}" "${not_stub_ok}" "${no_dummy_ok}"
+' "${EVIDENCE_DIR}/gate-test.json" "${status}" "${unit_passed}" "${unit_failed}" "${eslint_ok}" "${docs_ok}" "${not_stub_ok}" "${no_dummy_ok}" "${secrets_ok}"
 
-echo "gate-test: status=${status} unit_passed=${unit_passed} unit_failed=${unit_failed} eslint_ok=${eslint_ok} docs_ok=${docs_ok} not_stub_ok=${not_stub_ok} no_dummy_ok=${no_dummy_ok}"
+echo "gate-test: status=${status} unit_passed=${unit_passed} unit_failed=${unit_failed} eslint_ok=${eslint_ok} docs_ok=${docs_ok} not_stub_ok=${not_stub_ok} no_dummy_ok=${no_dummy_ok} secrets_ok=${secrets_ok}"
 echo "gate-test: wrote ${EVIDENCE_DIR}/gate-test.json"
 
 if [[ "${status}" != "pass" ]]; then

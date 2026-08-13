@@ -3,7 +3,7 @@
  * Spec 4.3 — Evidence checker (AC-EVID).
  *
  * Fail-closed:
- *   - evidence/SOUL_EVIDENCE_TABLE.md lists REQUIRED souls 1–8
+ *   - evidence/SOUL_EVIDENCE_TABLE.md lists REQUIRED souls 1–9
  *   - no REQUIRED row is SKIPPED / unproven / missing
  *   - evidence/proxy-ba-<HEAD>.json exists, gitSha matches HEAD, pass=true
  *   - threshold / BA / skip floors match admission law
@@ -84,9 +84,9 @@ function main() {
   } else {
     const text = readFileSync(TABLE_PATH, 'utf8');
     const rows = parseSoulTable(text);
-    if (rows.length < 8) {
+    if (rows.length < 9) {
       fail(
-        `SOUL_EVIDENCE_TABLE.md has ${rows.length} data rows; need souls 1–8 at minimum`,
+        `SOUL_EVIDENCE_TABLE.md has ${rows.length} data rows; need souls 1–9 at minimum`,
       );
     }
 
@@ -99,6 +99,7 @@ function main() {
       'SOUL-6',
       'SOUL-7',
       'SOUL-8',
+      'SOUL-9',
     ];
     for (const id of requiredSouls) {
       const row = rows.find((r) => r.soul_id.toUpperCase() === id);

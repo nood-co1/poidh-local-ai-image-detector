@@ -80,8 +80,15 @@ fi
 # JOB-KEYSTONE / I12 Monday path (section 4.3) — clean profile, real offscreen
 run_pw "JOB-KEYSTONE (e2e/keystone.spec.ts)" e2e/keystone.spec.ts
 
+# JOB-ANTICHEAT-01 (soul 9 / section 5.1) — dist zip-grep + empty cache at install
+run_pw "JOB-ANTICHEAT (e2e/anticheat.spec.ts)" e2e/anticheat.spec.ts
+
+# AC-SEC: no credential values
+echo "gate-journey: check-secrets.sh"
+bash "${ROOT}/scripts/check-secrets.sh"
+
 # AC-EVID: no skipped REQUIRED; evidence SHA matches HEAD
 echo "gate-journey: check-evidence.mjs"
 node "${ROOT}/scripts/check-evidence.mjs"
 
-echo "gate-journey: OK (JOB-OFFLINE + JOB-SCAN + JOB-PRIVACY + JOB-KEYSTONE + AC-EVID)"
+echo "gate-journey: OK (JOB-OFFLINE + JOB-SCAN + JOB-PRIVACY + JOB-KEYSTONE + JOB-ANTICHEAT + AC-SEC + AC-EVID)"
