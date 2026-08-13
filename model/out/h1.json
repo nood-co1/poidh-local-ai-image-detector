@@ -1,0 +1,48 @@
+{
+  "disposition": "CONFIRMED",
+  "falsified": false,
+  "falsifier": {
+    "tnr_lt_floor": false,
+    "tnr": 0.9736842105263158,
+    "tnr_floor": 0.65,
+    "logits_pile_at_0_5": false
+  },
+  "raw": {
+    "threshold": 0.65,
+    "n": 76,
+    "n_ai": 38,
+    "n_real": 38,
+    "tp": 31,
+    "tn": 38,
+    "fp": 0,
+    "fn": 7,
+    "tpr": 0.8157894736842105,
+    "tnr": 1.0,
+    "ba": 0.9078947368421053,
+    "mean_score": 0.41906357759532487,
+    "score_std": 0.46087318664928945
+  },
+  "calibrated": {
+    "threshold": 0.65,
+    "n": 76,
+    "n_ai": 38,
+    "n_real": 38,
+    "tp": 33,
+    "tn": 37,
+    "fp": 1,
+    "fn": 5,
+    "tpr": 0.868421052631579,
+    "tnr": 0.9736842105263158,
+    "ba": 0.9210526315789473,
+    "mean_score": 0.5000020454266553,
+    "score_std": 0.4421469295743877
+  },
+  "platt": {
+    "a": 0.6712809616370226,
+    "b": 1.5519620250943291,
+    "n": 76,
+    "method": "sklearn_logistic",
+    "note": ""
+  },
+  "platt_monotonic": true
+}

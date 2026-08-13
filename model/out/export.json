@@ -1,0 +1,38 @@
+{
+  "fp32": {
+    "path": "weights/onnx/model-calib-4.1-fp32.onnx",
+    "bytes": 87442240,
+    "sha256": "65b67edcd2c8c79b1bc18b344056573c5c777a6158b15192838fb58af501155c",
+    "platt": {
+      "a": 0.6712809616370226,
+      "b": 1.5519620250943291
+    },
+    "opset": 17,
+    "mode": "bake_mul_add",
+    "verify": {
+      "path": "weights/onnx/model-calib-4.1-fp32.onnx",
+      "bytes": 87442240,
+      "sha256": "65b67edcd2c8c79b1bc18b344056573c5c777a6158b15192838fb58af501155c",
+      "input_name": "pixel_values",
+      "output_name": "logits",
+      "dummy_logit": 1.4212275743484497,
+      "ok": true
+    }
+  },
+  "fp16": {
+    "path": "weights/onnx/model-calib-4.1-fp16.onnx",
+    "bytes": 43894052,
+    "sha256": "5bd414675505827aa9c79ade1ab8e5e662a3e63e312878387a05a21135f8314f",
+    "mode": "float16_convert",
+    "verify": {
+      "path": "weights/onnx/model-calib-4.1-fp16.onnx",
+      "bytes": 43894052,
+      "sha256": "5bd414675505827aa9c79ade1ab8e5e662a3e63e312878387a05a21135f8314f",
+      "input_name": "pixel_values",
+      "output_name": "logits",
+      "dummy_logit": 1.4919239282608032,
+      "ok": true
+    }
+  },
+  "manifest": "weights/manifest.json"
+}

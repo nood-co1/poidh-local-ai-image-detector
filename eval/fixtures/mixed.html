@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>POIDH eval fixture — same-origin mixed</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 1.5rem;
+        background: #111;
+        color: #eee;
+      }
+      h1 {
+        font-size: 1.1rem;
+      }
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      figure {
+        margin: 0;
+        padding: 8px;
+        background: #222;
+        border-radius: 6px;
+      }
+      img {
+        display: block;
+        width: 128px;
+        height: auto;
+        image-rendering: pixelated;
+      }
+      figcaption {
+        font-size: 0.75rem;
+        margin-top: 4px;
+        color: #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Same-origin mixed images (checked-in assets)</h1>
+    <p>
+      All <code>&lt;img&gt;</code> sources are relative paths under
+      <code>eval/fixtures/assets/</code> — same origin as this page when served
+      from the fixtures directory.
+    </p>
+    <div class="grid">
+      <figure>
+        <img src="assets/real_a.png" alt="fixture real A" width="64" height="48" />
+        <figcaption data-label="real">real_a.png</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/real_b.png" alt="fixture real B" width="64" height="48" />
+        <figcaption data-label="real">real_b.png</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/ai_a.png" alt="fixture ai A" width="64" height="48" />
+        <figcaption data-label="ai">ai_a.png</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/ai_b.png" alt="fixture ai B" width="64" height="48" />
+        <figcaption data-label="ai">ai_b.png</figcaption>
+      </figure>
+    </div>
+  </body>
+</html>

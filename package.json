@@ -1,0 +1,48 @@
+{
+  "name": "poidh-local-ai-image-detector",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MIT Chrome MV3 extension: on-device AI vs Real image scoring after one-time setup.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "bash scripts/gate-build.sh",
+    "test": "bash scripts/gate-test.sh",
+    "typecheck": "bash scripts/gate-typecheck.sh",
+    "gate:typecheck": "bash scripts/gate-typecheck.sh",
+    "gate:test": "bash scripts/gate-test.sh",
+    "gate:full": "bash scripts/gate-full.sh",
+    "gate:build": "bash scripts/gate-build.sh",
+    "gate:journey": "bash scripts/gate-journey.sh",
+    "check:evidence": "node scripts/check-evidence.mjs",
+    "check:secrets": "bash scripts/check-secrets.sh",
+    "test:e2e:offline": "bash scripts/gate-full.d/15-offline-unit.sh",
+    "test:e2e:proxy-ba": "bash scripts/gate-full.d/30-proxy-ba.sh",
+    "test:e2e:anticheat": "bash scripts/gate-full.d/40-anticheat.sh",
+    "test:e2e:keystone": "bash -c 'export CI=1 POIDH_GIT_SHA=$(git rev-parse HEAD); if command -v xvfb-run >/dev/null; then xvfb-run -a npx playwright test e2e/keystone.spec.ts --retries=0; else npx playwright test e2e/keystone.spec.ts --retries=0; fi'",
+    "eval:proxy": "tsx eval/eval_proxy.ts",
+    "test:mutant-constant": "bash scripts/mutant-constant-model.sh",
+    "test:model": "python3 model/test_no_proxy_leak.py"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
+    "@types/chrome": "^0.0.287",
+    "@types/node": "^20.17.0",
+    "@types/sharp": "^0.31.1",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.8.1",
+    "globals": "^17.11.0",
+    "sharp": "^0.35.3",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.67.0",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "onnxruntime-web": "^1.27.0"
+  }
+}

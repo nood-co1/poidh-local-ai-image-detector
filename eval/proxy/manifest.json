@@ -1,0 +1,1792 @@
+{
+  "version": 2,
+  "frozen_at": "2026-08-13",
+  "section": "1.3",
+  "description": "Full frozen proxy for soul-7 admission. AI half from legal generator datasets (DRAGON SDXL/Flux.1/PixArt-α + OpenFake test). No hashed subset. Never train on these hashes.",
+  "formula": "attempted N; skip-rate=skips/N; BA=(TPR+TNR)/2 on scored only; pass iff BA>=0.750 and skip-rate<=0.10",
+  "sources": {
+    "real": "COCO val2017 via images.cocodataset.org",
+    "sdxl": "DRAGON test model=SDXL",
+    "flux-schnell": "DRAGON test model=Flux_1 (Flux.1-schnell)",
+    "pixart": "DRAGON test model=PixArt_Alpha",
+    "openfake": "ComplexDataLab/OpenFake core test, label=fake"
+  },
+  "rows": [
+    {
+      "relpath": "images/real/coco_000000000139_none.png",
+      "sha256": "ed429899ac830ee6c96ef38e793e530594b79eed0dafe1eed1984c04d974c4b8",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000003934_jpeg_q70.jpg",
+      "sha256": "1b4e0c5fa87b19f62f8a694d3db2a79787df4ee17a53f9a72ffb53bfb9e072f6",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000007991_jpeg_q40.jpg",
+      "sha256": "bb3af1ea767ef232cf43496cba9aec30f7273d092db7e599b8d49474d9c2086e",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000012670_webp.webp",
+      "sha256": "f7c5db4afaaf131043b55166156098d17f932883aa7602a77dc58ddf4914f34c",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000016598_screenshot.png",
+      "sha256": "1b3f038e1f70dc3a01bbcf37e20afee543c1980817d52bf9899ddf7a26543538",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000021465_none.png",
+      "sha256": "2966dbac9a78d360d89e68d8d6085c0bf3b60a023ec51272a9b32e96c25af56a",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000025393_jpeg_q70.jpg",
+      "sha256": "1c6af9b52af0caaf333aa76516012ec068b52a01aeebffe05aa4183c3c97b838",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000031217_jpeg_q40.jpg",
+      "sha256": "0d44de6c77a60c4b60571deeb689a7a74fbd6b9c42a859f01b3ff23fe0b2ba25",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000035197_webp.webp",
+      "sha256": "fd4e01d006de2f624bf7925a000251a4efd2e991dfb2a03ccdbf73e3f77af279",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000040757_screenshot.png",
+      "sha256": "3080e7add9395af7979b1ecc55cd3df103490927b9d9d938553019fc40785cd8",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000046463_none.png",
+      "sha256": "98deb5eaa8b76a72e56dd444ca254895579ed04cd242760e721f5eb5a8271a50",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000051008_jpeg_q70.jpg",
+      "sha256": "20c34f8d94f7b1a2ae7f850ecd4447c41e43133f57e98cc3f091e2ef5c0e07b7",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000055299_jpeg_q40.jpg",
+      "sha256": "4743d2fd38436abde47f9bd80fbd86a059a6b32d9ac51102f1eca2c9ec2786cb",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000060835_webp.webp",
+      "sha256": "ac6af7744a8d4c0261ee6a2678f19901dedee04339f51f93f4fc839179a9032b",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000065485_screenshot.png",
+      "sha256": "3346e37d8aa85fb70bad72d94328320a872f7c7926e6fe86b5e3d6840fa4392a",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000070254_none.png",
+      "sha256": "0fa4a88e85dcd9940578b3ce1f766a4c93a359d8ba7b2b6282ba8cbd288defa8",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000077595_jpeg_q70.jpg",
+      "sha256": "7805f43f6d5661c6eea24da8ed47071149ade6084e52a90aeaa5efcc5dbbe382",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000081766_jpeg_q40.jpg",
+      "sha256": "1a9b5e4ae13eb7ded535dd4d3467a97e6cc3430988bbbe59655a9fc8eb811221",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000086220_webp.webp",
+      "sha256": "760fca508617425a3c04410afb6f76b2803cde83525980c6d4f6afcc6ed931dd",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000090891_screenshot.png",
+      "sha256": "c1bd320b0d1fda6100770d5eb8c40039e6de06999ad38b1e8245220739d3fe2a",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000096427_none.png",
+      "sha256": "365ee872782cc6f1d1a2baa2ce7cd4c97ccb0b3438225c329abf0248baacf883",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000100723_jpeg_q70.jpg",
+      "sha256": "2a09f5131d3998475866a9f7b2dfc697e685b99ee2426b5e82936692ef865dbc",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000106330_jpeg_q40.jpg",
+      "sha256": "28d7161c3400e5f29e769fc32d3c87ecb1955753343dc5d6ac7dcdfc3cf1b591",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000111086_webp.webp",
+      "sha256": "5912ac303daafbc33be8bab71104e54aba59464f94a6f76783b257f9954bcbb5",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000117492_screenshot.png",
+      "sha256": "b0765f1fce0d2a900ba22d933f699c675ae78ca3b1170d8ffeb730ed400516c3",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000122166_none.png",
+      "sha256": "aa2fff034cc5e9402739d9934a81e2fa271418b3205fc420b6246c5a3d641d27",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000127135_jpeg_q70.jpg",
+      "sha256": "bb6ba29e206e617f1683a5bb4d458cb5d6e1f99d3b5cde13afe8c86fa7c2dc82",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000130699_jpeg_q40.jpg",
+      "sha256": "bebb2551ec3a4502786893286a71caea0e730e5cce3af67aa951cb00c653140f",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000134886_webp.webp",
+      "sha256": "1982fe2ff600c5b1ec02aaaa8a5e3204168cea1953f556cb241cc7e9ace384cb",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000140203_screenshot.png",
+      "sha256": "60b3c682aab4c0116bf07d8bbb269b39313d10d5fe13a7e290e628f682375a4b",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000145597_none.png",
+      "sha256": "339e0b1b87a202b78ab225f8093830e0b442c7519eb963bfe0dfad525a3abe82",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000150417_jpeg_q70.jpg",
+      "sha256": "7b5551e2c86edc5d26ea321de9e92daec44203408b9835c0527e543d85b86f63",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000154358_jpeg_q40.jpg",
+      "sha256": "ab94d05cbd1c440b50c150cfa0982e6a89e51c52de6ad301298d196b6fda91b8",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000158945_webp.webp",
+      "sha256": "15da25b7eeb002929a418b2654a5aaf2cc27c1f722c263c073859ab61b9b80ca",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000163117_screenshot.png",
+      "sha256": "7804f160e18df1434089bfa1968bd50fd4fe0ca972855f25972c2d9bdb39a954",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000166664_none.png",
+      "sha256": "83decd9273ebfd6d0e2b4be7081c9670477624fc358718d41cd9ef667dc8732a",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000171382_jpeg_q70.jpg",
+      "sha256": "5008c61de04868dceae60c09884518f565f7eb63be590f8c24c76b5279527a98",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000175443_jpeg_q40.jpg",
+      "sha256": "f1a9d00105c305e8e790e8c501d6e3c3e352d7620707406cc62adf5b3286fd87",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000179898_webp.webp",
+      "sha256": "01a28290a6fa0f1a32fda19edbb607cba10d969f520bebdcd90be89f0aacb86a",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000183709_screenshot.png",
+      "sha256": "d136ec6ba2eace7b20f4afc15c917af0900785b1e0df5b3ff9070c124d0f52da",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000187362_none.png",
+      "sha256": "12fa08ab548d69b2e33c674f176e05a184c6583c4d5f168422bae5b996daf78c",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000191614_jpeg_q70.jpg",
+      "sha256": "7b81482ba47a472acc7a3b0025c47729a32a3fd6d2628c34e0a9cf82600738a5",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000196442_jpeg_q40.jpg",
+      "sha256": "8ddaaec1ba7dd02a3df4f45059338cd10ea605e84b933dbfbc6b45c063a1f9c6",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000201775_webp.webp",
+      "sha256": "11ad3242863e8a0f6338253683807ab52bc74c5543a758e00cb2100e99966642",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000206994_screenshot.png",
+      "sha256": "b2f5e245d697a38d898bb1639f1eb5708b3faf68f51ddb67786bbf8f517e34ce",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000212453_none.png",
+      "sha256": "c61821158698639abe06de695dfa80df34828b106d6cfc5e26b25a023d132d54",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000216739_jpeg_q70.jpg",
+      "sha256": "fb91e1b038ddbaaa8a679484a6a580a838c9bbb84be592789a8f2319264f945a",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000222317_jpeg_q40.jpg",
+      "sha256": "fc8b986ab52ed0e6e801f39a53bda82dcc784e6299558199ea125decd1b7f92d",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000226592_webp.webp",
+      "sha256": "1f2cfe74227b843cacc85a6c71baa603d620e5a2a83d8c44e962f9d0984d9f88",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000230819_screenshot.png",
+      "sha256": "3f4efdc5fd1e88a84af8d35f57da0513c98a9077c5e566d8d0900d71e7bd6946",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000234779_none.png",
+      "sha256": "afe5160898fea6876a21fcddd387c3e020ef6111684482783f416b2acd2dd33c",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000239773_jpeg_q70.jpg",
+      "sha256": "307a8c9c64ab02a8bc1aa474811bc314af58bb41e6adde7f5e657d12fb81d1fe",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000245026_jpeg_q40.jpg",
+      "sha256": "50edd0ab64fb510f15a8582678af81c6f52d0ba4faf21a60c878e66c5a3ee99f",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000250205_webp.webp",
+      "sha256": "b9e059d312b954fc1b34ba87e8ff0ad2fba46f5ebf03e05864d8af2c189c8025",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000255824_screenshot.png",
+      "sha256": "4d9eeda0d036378abc06404ae513206655e5448c7868fdfc6808086b6493afe0",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000261036_none.png",
+      "sha256": "fc8143dee3e3521bd40967bd61331ed01658827a90f27c5c3ae03197a9f40017",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000265777_jpeg_q70.jpg",
+      "sha256": "f7c80e052374494469499554c50e20594478c6fbacb91729da984aa8b9a2a66c",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000270402_jpeg_q40.jpg",
+      "sha256": "49cab4a0ff5137b087b91487a75dde14a1ed0c479bd001ef98962e16db77815c",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000275727_webp.webp",
+      "sha256": "529c3afce018bca9da0b203c9699be9323d8354e86197b8ebe2e0613d87f92d7",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000281032_screenshot.png",
+      "sha256": "0c01f13c6d53222e9c234f59fe97488787ec0c26363fb0202df37b32f365632d",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000286182_none.png",
+      "sha256": "492edf66ac9888832bdb18af232aec043d04f8760dda1783a36bec88529649d1",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000289659_jpeg_q70.jpg",
+      "sha256": "df73ae436f9f16c21f8a1746d7c7f58da6477e42b4ebe269479e0376e21bc07e",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000293245_jpeg_q40.jpg",
+      "sha256": "4982d34f936fb0537b83361b0f9cc757ec81268906a2e442da032f6e7e903bad",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000297562_webp.webp",
+      "sha256": "4ddb39af33e3fdf284f5b9bfc3fd4c8da907a4958d8b4b2307b1027087fb2aeb",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000303305_screenshot.png",
+      "sha256": "dea032182a69d87cb460a255d5c6711b7a79324737f7fac9f1e52c69c753d322",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000308430_none.png",
+      "sha256": "dd9a29e845fc65899e8feccfb6169551a12d3a2a4e46395e4c50c8c7a7b481bc",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000312237_jpeg_q70.jpg",
+      "sha256": "33295ccf214e79b896f22619c368fa510c805e9179a139a8c474103a1086e6fe",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000318114_jpeg_q40.jpg",
+      "sha256": "933990f4ad18d37a6c602fb50ac48309d8c36c98f8e09d68da189c8569bc7e9d",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000322944_webp.webp",
+      "sha256": "420b6e4e751d2d9a81d54136593c62f43a719bed29a7cd508a821519827b6c86",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000327617_screenshot.png",
+      "sha256": "f152441475adf56ae8706e6b44dda8e922cf9b2db58c13e0d15566a624dbdafd",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000332570_none.png",
+      "sha256": "5c0757c0eba35a2e424fe114c919cf69aab75a1af74a3553618a5972c5d1ba95",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000337498_jpeg_q70.jpg",
+      "sha256": "21b3ed1fe4082ac21992d8e97939f1da4fcf50faff81dcc275badc82e25d46b7",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000343076_jpeg_q40.jpg",
+      "sha256": "e7c57417bd92515ce29804cb625f866aff505c3ae2b78be1b0c74ef55b13edbb",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000347163_webp.webp",
+      "sha256": "e06cafcf2bd8936e35416bcf2ba234b28ca9f714f29225175f0bc182472f05d5",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000351331_screenshot.png",
+      "sha256": "1922fc455f6c8145540860e40efc43456ac495e23a522be4013c9cab6e26aac7",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000356424_none.png",
+      "sha256": "065af1e92a736c5e5af5bc60bc92532355f4b9ab72e9814641266bf5a7900ba5",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000360661_jpeg_q70.jpg",
+      "sha256": "46a6b617ef46336cd118c534752bc21741f236d3b27b43ef873cea1c9c5ba555",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000365208_jpeg_q40.jpg",
+      "sha256": "cd8289460ca08264bb682771921f14eddfe498b182c31f620c98f3fd79462f50",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000369503_webp.webp",
+      "sha256": "213945660f7c85cc7343ea40f07acab5c794e1567c800df5ca82c1912884b65a",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000374369_screenshot.png",
+      "sha256": "1b21800c64df7cf00e0346e1c7506c78c4811d8362987acf3aa6a2a4ae7b3ac4",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000377946_none.png",
+      "sha256": "295a829ff693cf9c2b896f8d940a74be9e7dfbed074bf98bf77e7334c29767de",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000383443_jpeg_q70.jpg",
+      "sha256": "d3f4267bd15a4fed07fd996a5d697f61d821572dae7a0f458c9b2d4eca3ce2b1",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000388903_jpeg_q40.jpg",
+      "sha256": "75b25a946ecddabcddf1d7d56143cef237dea64f201efe19a8a37b9a5d99d2f9",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000394275_webp.webp",
+      "sha256": "feb18d1173e51f52be4c741201b4d36516be1b8818f710089106df4acadd0053",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000398810_screenshot.png",
+      "sha256": "d734df1db1e16a6590ad15d09764136012c7ab92ecdc2ba5c01c8cda7ab77615",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000404128_none.png",
+      "sha256": "830874006319a3c3debd7f3c0c0b626147ea153623ac36e377795100855fe511",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000408112_jpeg_q70.jpg",
+      "sha256": "3a418c4c266332651b945e46847fc64bfeb6bb2b595c32fbafb18db648f03b83",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000413395_jpeg_q40.jpg",
+      "sha256": "b7bf3b67232ba47016d9d5e1704b6ada2bb121b150043fb65eb78d117aa5748e",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000417465_webp.webp",
+      "sha256": "989246b8af21497632b3f4cd3c1eef3796e84559a6e61191f83bf0e8cc05eeb4",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000423519_screenshot.png",
+      "sha256": "487fe5cdf332e322abec6d4dcdf57583bc93510985e56e6c168ebd4ce136660f",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000427649_none.png",
+      "sha256": "f71644f7a45b512585898e385690bd5db82e1d80488880564d38f87b391d8350",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000433192_jpeg_q70.jpg",
+      "sha256": "47f6be91380f5476d3bff2871bab9e48abf1f8539b5978a4342c26f1b61f118c",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000438862_jpeg_q40.jpg",
+      "sha256": "0c880acf45611a8a3c479153826c5c960903cbd0025bdef19b40500d5631317f",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000442993_webp.webp",
+      "sha256": "56b8c3f8828f64dae5af0f04e68afc381b61bbb6c668718002b66775e814475e",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000448256_screenshot.png",
+      "sha256": "669421d68e9aeb95c242dc564e842aaed8f2380c20e27c77ae33521d08d19682",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000452515_none.png",
+      "sha256": "60b7943966f2088524e50447ccbd6bc200987a92b6cf72ae5f6a6d0e9ac90785",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000456496_jpeg_q70.jpg",
+      "sha256": "990a0906e2f7d99115e313c239e2c227c22a99e8c5734bc76630d796f89fdbff",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000460494_jpeg_q40.jpg",
+      "sha256": "5b617a6dca3daf76acac6c1eb2e1230de33751b48f503b821aa30d8bf509a741",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000464476_webp.webp",
+      "sha256": "dfd8f0828bf48c5a600d1d400541ea2f4545f646c3fbfa0bb0817fbafc6f0513",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000468954_screenshot.png",
+      "sha256": "921ff87b0cf1662b09e0db06b4354d58777c1902c909e37e2f8cf79c907fb675",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000474078_none.png",
+      "sha256": "482e9601961a85b6b7c928e40301993ca1e9064b79819ad6d8c7246cecfe3fe9",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000478136_jpeg_q70.jpg",
+      "sha256": "2917f47a9f9adfb19bc25280f0b0d74e7524995e9d3f3c27465b72c6bc3f0a48",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000482719_jpeg_q40.jpg",
+      "sha256": "72f552cb8ad9f35d3a59d44c6a27dcf43b18847cb5ff9041e3e034eb25da8f60",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000488592_webp.webp",
+      "sha256": "111ea3dd697ca535a3e1de832e3805ee268fba255d36f6964a913d808a58563e",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000492878_screenshot.png",
+      "sha256": "c196d93cd71893b4a9d20e3e863fac86e40a411ae0aecb1d31e64d0446912ca0",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000498709_none.png",
+      "sha256": "c29c6dfc6cd9e604ef63d4f20efefd0b0b4a21c30d121b7257dfd06e24fbcd19",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "none",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000503823_jpeg_q70.jpg",
+      "sha256": "5a31a7995e0d33e2ef3e35f78752a5f0cc08016c93c4b3a6e828ce2cc4a62cec",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q70",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000508370_jpeg_q40.jpg",
+      "sha256": "cdd0af108b2ade501704643006e6338dfa9ed4ddafcbac951fd534374b2131a8",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "jpeg_q40",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000512985_webp.webp",
+      "sha256": "20ae75d0d5d040f0fd19f68b09c73022f978b792a3895a954039b9246368492a",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "webp",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/real/coco_000000518213_screenshot.png",
+      "sha256": "ae654568af7c5d385ca35bba6adb200ee58316add15bdcea8428a458e46008dc",
+      "label": "real",
+      "family": "coco-val2017",
+      "corruption": "screenshot",
+      "license": "COCO-val2017 (Flickr original licenses; research use)"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_000_none.png",
+      "sha256": "8018ac70efec3a6f99a04a10b0f8469745d425dd0e32a2c1ad2277647addc2e8",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_001_jpeg_q70.jpg",
+      "sha256": "3d5906326e2bfe231d6481370b2c05f682ab865bb0f8dffb91d7027ffb753247",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_002_jpeg_q40.jpg",
+      "sha256": "970885f43cc08e079837ef4a9743b515836bba3411bc385242556bd94efd3632",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_003_webp.webp",
+      "sha256": "4df090a9276ad12a7f4bd5829f2e9f7a99ccf000b30351d5329fcd1aafcd676b",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_004_screenshot.png",
+      "sha256": "af17baad3d1e1e2633e09b054e71e5e6aacf04d36600a10895b471c70a029403",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_005_none.png",
+      "sha256": "93fedf8f6d0eca6153729c0aebfd3c68099c5c7998eaf8448385a1ee154b675a",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_006_jpeg_q70.jpg",
+      "sha256": "90c264b0c07eddc6d461844f745d7f79dd1e109f82a1ce1cec05cc1b56381756",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_007_jpeg_q40.jpg",
+      "sha256": "bc5762303d7ed64a4e642e96983bd7a08da3100b99c5be2da4062a96724ab770",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_008_webp.webp",
+      "sha256": "b4b132b5f6d882516900f8224e46319b856d408f6bc8ea933a142232df9e4423",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_009_screenshot.png",
+      "sha256": "ec1c10bdb8c0069e9509ef32d93c068ec71b999dec8cdf137dbf60573f273e28",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_010_none.png",
+      "sha256": "a718af032b26e37efeb583d6a31e67fd6c6dde0bd12293a9d2344cf4d3c42276",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_011_jpeg_q70.jpg",
+      "sha256": "813aa4cf30ad2dd55be243107f4631fd41db606067eb0cd29316fa769d8d4bc6",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_012_jpeg_q40.jpg",
+      "sha256": "7bfa3367ba0dd2aa848cd751fe2e007d6997131b17718f00c90c46912705b7ee",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_013_webp.webp",
+      "sha256": "60c2f6894476c481d1d7c66d1f7558ddaed5a2b920e362fdbbffe00ac8cc0dca",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_014_screenshot.png",
+      "sha256": "ff00cb12652bd657eb5f6a032abdd309fecef41690b53945799a141e8ccdde0e",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_015_none.png",
+      "sha256": "35693bd4b6e494e2edc14cfb69c5bd7341eba383c52900b8420fc0380ce6a6a2",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_016_jpeg_q70.jpg",
+      "sha256": "070ac3a14bd1588b08af69084096a270f5e6cf6820576df806c0ac0dc0ffa1fd",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_017_jpeg_q40.jpg",
+      "sha256": "d042d4013bafa260e7a996c6d3a4daf04125f0c4ce04118b36c91fc30ab2e75a",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_018_webp.webp",
+      "sha256": "b28019d558b325d9f14fa677c6bf468b22e1101144eee58bfc6acd9ecfd66665",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_019_screenshot.png",
+      "sha256": "5cfb8da6f676c58e8875fb5ecbfaca41b6b2ebb00b59ac8e50c906143a0c8e84",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_020_none.png",
+      "sha256": "70a88e06ed8300f168b5319520998517598c02300c08963df976964baf800505",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_021_jpeg_q70.jpg",
+      "sha256": "e6152beca1c2cbf1e5c77c278af364d5048ab49df02abd475af9e6efc4357d63",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_022_jpeg_q40.jpg",
+      "sha256": "cadbe5291d006f34e074a536ec5553646ef527b86ee625166c0e66b4d52184f3",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_023_webp.webp",
+      "sha256": "ca958746e8d5121eb189f6e00b184625cd7c96cb8e4eee119c01ba3a8e47eaa2",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_024_screenshot.png",
+      "sha256": "793e1040a26f5d4ff1cfa21a4ed69d408086a3c115c426a63ff3113b88ae5292",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_025_none.png",
+      "sha256": "a0f0ac0682ea73a38dc70ef13a4e1feb9e544637be6493118f74cc928b234c82",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_026_jpeg_q70.jpg",
+      "sha256": "9d61dbd7155b3beff51e5ad39268a18b74234bdd1438a661ec793c6ce6403b3f",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/sdxl/sdxl_027_jpeg_q40.jpg",
+      "sha256": "02b4da8484595b1540f550caf84e7b9dd98501393bfdbd90ac720d073207d43a",
+      "label": "ai",
+      "family": "sdxl",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=SDXL"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_000_none.png",
+      "sha256": "e75e15ee1b40630b17c3f1fba2482504f2877f8ac4b42e6b65b949ceaa92c884",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_001_jpeg_q70.jpg",
+      "sha256": "ded0c573bce0f96192b6fcfdb4f97e4d953597e828d43c2709e5daf4a7034012",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_002_jpeg_q40.jpg",
+      "sha256": "64d8e61402b6e644568150a9a9af5a466eff4666801a753b42fed4fdc87670af",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_003_webp.webp",
+      "sha256": "7cdc55c2f0819d96c4c1c26b7e2e348bdef92d86fc3d0d98da7f2ed9ec758999",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_004_screenshot.png",
+      "sha256": "cbfe4c2bacb6bf6fce210c352094e370c0e33652adb836f89100e642acdfd007",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_005_none.png",
+      "sha256": "467c9cb48e922dd52daaaa5ce2b6568bbf9897117e02ffb0c8f243e4bb9cad2c",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_006_jpeg_q70.jpg",
+      "sha256": "b80f16891325fbbf81277dc9dda28499d030f6cbfa5016a69daa32e6f3e77afd",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_007_jpeg_q40.jpg",
+      "sha256": "e08ce17696be5ad4b5a4fd7e583fea63ed8b24ef5bd44b97a070425c0ed41b5e",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_008_webp.webp",
+      "sha256": "07fc921a4b2e126f7e0d43e5dc894bcea80efa8da3b0bcf4827feccfa70ec759",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_009_screenshot.png",
+      "sha256": "40a8191abefe843f84c2153bd0c382bd52500f288600172a5f98c3635009bee5",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_010_none.png",
+      "sha256": "e515fbb09f0850c15a88703389fb1dce6112ba076bfd0111ccf3052227c30348",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_011_jpeg_q70.jpg",
+      "sha256": "cfbd0bde8732203419ec1a788241c114206209409f67d0667d70ede4850806da",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_012_jpeg_q40.jpg",
+      "sha256": "fd302db31d69f9679911023af036ddbe2b857054414518157b8a98b7b7db4ce9",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_013_webp.webp",
+      "sha256": "e87b435ba6dd6c38759cd3a8ab0edb0636d86755163788ea81eb402120bf5bbd",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_014_screenshot.png",
+      "sha256": "cf0826bc1d46904ff52f4b205eae02f7a7dc7929897bb489c93aaceb143d4cc5",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_015_none.png",
+      "sha256": "bde7a2fb5b122c78419747f9f485fbcc94dc775966df7a628f2511feaf988716",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_016_jpeg_q70.jpg",
+      "sha256": "0d0f1e9fd2ef52d3c95f79e57f0056bf5adf474a339a8d646b41fdc61ead7983",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_017_jpeg_q40.jpg",
+      "sha256": "ebe7d21f50e01466c5186188d3db7b95b9a19218c9b124c0ac476a7f43e117dd",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_018_webp.webp",
+      "sha256": "f6a3c3bddbb51a6688242358d7d98592ee9474c43d7c76997a42df62213c8a5a",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_019_screenshot.png",
+      "sha256": "2b44619554086f71611d1f86e5b68d244e252ff42bf8236bf76bb0587bf51dca",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_020_none.png",
+      "sha256": "5d2245c231405463dd23a6311dbdabb9eb5e8ba0d3cc5e3a54766b7ebd8812c9",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_021_jpeg_q70.jpg",
+      "sha256": "ee305261c84f48a6cd4703becd484c9d763a4b0d4075bc4c35eab1055ad8b358",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_022_jpeg_q40.jpg",
+      "sha256": "fe59886eacf3b775db9d907ea7abd4ce272f6550a1ecfd5270689b65c91ae90f",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_023_webp.webp",
+      "sha256": "538308b89eb8a33d3ef1b0c96906faa6bfb9fb3b656eec8a28ffd68dceff1015",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_024_screenshot.png",
+      "sha256": "a5d0731b0d468e4198b791e1c6c171661d24c562b3a50e81719f4546287b4317",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_025_none.png",
+      "sha256": "868d67cd9946f7fd42a77a61356d75a51a65aed10596c6e4ce2d419c0d22fb4f",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_026_jpeg_q70.jpg",
+      "sha256": "99e138f448ce538c6382df591bb76e129b7a1567fc61f07cde710a40aeb60937",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/flux-schnell/flux-schnell_027_jpeg_q40.jpg",
+      "sha256": "608bb808f98b1a5bdade0b6047537aad25288f54e67afb38175c7fcbc17a6a2b",
+      "label": "ai",
+      "family": "flux-schnell",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=Flux_1 (Flux.1-schnell)"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_000_none.png",
+      "sha256": "0816f97f189290f059596a7979797f452743ba2af8e40554216a62a01dd9208b",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_001_jpeg_q70.jpg",
+      "sha256": "35caa3b5368da5540151d3065b51d9eb2c950537f1e0496bc0102ecc4075e288",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_002_jpeg_q40.jpg",
+      "sha256": "76957c5be7d56ea3f4fda3b5560e6c508a3a90ebf41571fb7f025ece550bbfe8",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_003_webp.webp",
+      "sha256": "34040408afed489a62f920386ea328fbf97a1c72306f5b5c26a1c59ebf2b91d3",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_004_screenshot.png",
+      "sha256": "5f45e0858481933620f160125b6d884fbf498b391b73019df7b1f9a341e4c37e",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_005_none.png",
+      "sha256": "8a99988213428d6b7fba4157f8340060dfb13a1854bf0a7a715db9d0beedec6d",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_006_jpeg_q70.jpg",
+      "sha256": "6612c7dabff435bfb2338877a191874db3991560d47156096f55abb9addefb72",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_007_jpeg_q40.jpg",
+      "sha256": "b3f2c07dcee260e9356143e69bc6b7720a7faa027582aa78d7877d85eb78fb34",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_008_webp.webp",
+      "sha256": "aa553ff43cdf0e86f29810087f70b3a30a5199ac89b306c071233bb3df4468a4",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_009_screenshot.png",
+      "sha256": "a6d3e8236b6e50d2014113b5ed03797eee7acfe16c2163ea64995f5441c25291",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_010_none.png",
+      "sha256": "097cf79338f722720b81b20d94fb159ada081105aa37e33c6912d4aaf70f9ad3",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_011_jpeg_q70.jpg",
+      "sha256": "c7b583083af4e69e05b19ed51091dbb068160d773915cd05bab645b6baa7233e",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_012_jpeg_q40.jpg",
+      "sha256": "85750a29981d38932c975fa1834de3e2dc1ec21589a209fd27b43538b4e96a69",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_013_webp.webp",
+      "sha256": "7f824d14b6bc56614a2625c98da1c0d5e587d04475bfaac112dca0ee9c3b5a24",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_014_screenshot.png",
+      "sha256": "ca4ab34ec9eac7351ff3bd330d022bb60dc5ad591a572deebe6d0d4b23871b8c",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_015_none.png",
+      "sha256": "e4044a2ed0222800b7172927743c834f5f9cfd345418737d54b7b8e879a7c7eb",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_016_jpeg_q70.jpg",
+      "sha256": "ea1f54ca4a7c4eb2c6ce3500a6cc3908b0d0c6cb8f73f38bc3c106821fb010da",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_017_jpeg_q40.jpg",
+      "sha256": "21e95f44a3654647b4e00606d569d28429ba5174511b96456eb56e3d59888004",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_018_webp.webp",
+      "sha256": "af10f4e96423045e6977f1d9254cf5f3146d5f6a5d27d15792a6b0bc1f889578",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_019_screenshot.png",
+      "sha256": "a8dcb5f86a360b1d15183267e6874bab54184551bc118629ed951f858f08da26",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_020_none.png",
+      "sha256": "1ef6b94036638fb1dc8686980fa362693159c1054759d1fe66aaf076c7123bf5",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_021_jpeg_q70.jpg",
+      "sha256": "a65d0fe24e2ee1bfae3ca16515c28d4c32bf862138671c53a21fb1f4b22a6f3e",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_022_jpeg_q40.jpg",
+      "sha256": "a1ec068b8922c06edeb2d1deab7241299eb93fb4e06120c42306bccdada9f334",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_023_webp.webp",
+      "sha256": "40a6687b24008797e6e2710160bdc1aa2121c5cca7a99fbd9bd8296d0e5c5302",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_024_screenshot.png",
+      "sha256": "f25fc22961a375ee7603badacf9cac8b7414c86d62d21f091b067220681eaae4",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_025_none.png",
+      "sha256": "be0d47c93802b813af446ea77b39535ec7541959b9dda0e24339650348df83ba",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_026_jpeg_q70.jpg",
+      "sha256": "6fb74aa37999e03d140cf0b91f7c1fa11ea4f0a89bfa443ca9002da70c792ed4",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/pixart/pixart_027_jpeg_q40.jpg",
+      "sha256": "365c2f0be2ba971da68076a4e890d85c8117e821625dd945ec91d1505c0b1e25",
+      "label": "ai",
+      "family": "pixart",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 — DRAGON test (lesc-unifi/dragon), model=PixArt_Alpha"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_000_none.png",
+      "sha256": "1a257ae56e144681e22b305fab6e989f7ad824d667bf93b4880d29256a0b912d",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_001_jpeg_q70.jpg",
+      "sha256": "ea8be4e936536ae7085c32187735dea8d0b9f2ed648c74de3023af1c7ded6734",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_002_jpeg_q40.jpg",
+      "sha256": "637e0c882254fc5d55f65461cef96d61f5f8e47ed86670b5c442ac8a68af686a",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_003_webp.webp",
+      "sha256": "5ca439ba59000bc884afd083fac44974df38ca314c98f60fe13d8d7f325f548a",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_004_screenshot.png",
+      "sha256": "f594c36908249d68058cc64b35e3387e182528ce06ba7380cf2143cae51b5e4a",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_005_none.png",
+      "sha256": "56dbe67e87f4072c9b7f50956d3d9b364ea65fe8797378f6aa15c6c4a789d91e",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_006_jpeg_q70.jpg",
+      "sha256": "342e6ea1d7a5e101811512ea249f03f90a8031330d431ad47915024973f06974",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_007_jpeg_q40.jpg",
+      "sha256": "dbd90b12b98f0160092d9d7202ff7bdaac103992fe0a1b7021ddbf772cf31d08",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_008_webp.webp",
+      "sha256": "6adb582a3447d1b75c9a0396b7f06dabd9a1d8c9398af39d0c24d80f80ed20b0",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_009_screenshot.png",
+      "sha256": "b0d66c63b077d019935b49dd6994bb4d9d1d0d797defe3e3ee65bc2486796850",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_010_none.png",
+      "sha256": "61f25f00948bc372d84c958bed0c96eceaddd1a9b9ecb9a7a137e009492d9427",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_011_jpeg_q70.jpg",
+      "sha256": "8c486048270267293d8916267f497bd9d6261f4da1255e0b195349b2d09ba6e1",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_012_jpeg_q40.jpg",
+      "sha256": "eb3a9a9705707ec118f80d98a80fc8d1e1235a9e7a3b670cc720e189119bdc3b",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_013_webp.webp",
+      "sha256": "0dca9d0e15d3821307957a4d0b7e5307996ace694002eebda47a04c4779d50ab",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_014_screenshot.png",
+      "sha256": "8aa20843ef6ca839fb8e37dc865d0e63ed7bcbfd4d82afbcff89095d2353daed",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_015_none.png",
+      "sha256": "17e5c662869b63b82adb85e1518e3b850f99d8aa468e1d429814c94a81236af7",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_016_jpeg_q70.jpg",
+      "sha256": "cdff9643a343f542fb9a2196da9189b20cbede4e2c887bcba031ce6d58fe0c91",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_017_jpeg_q40.jpg",
+      "sha256": "18269e56b57448f8003c41b8b33b795f556bac57de9bf4ff642c5b3a4d06e472",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_018_webp.webp",
+      "sha256": "c06921e675980adb96d84122ef61e2953783f6b12724082788d43b5e8b1d5da0",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_019_screenshot.png",
+      "sha256": "96266acb04a0ad013253d8b109c304a5d884426b15b3140efd4ea28b7d45f8b1",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_020_none.png",
+      "sha256": "bc82349434150ac08c6222e40d13c3db35232073f1104b75c969d871c5a0d81c",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_021_jpeg_q70.jpg",
+      "sha256": "be6141caffcfa9880651fcebb10ad0ade396f6cfac2ac762edb066e3f6678ac6",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_022_jpeg_q40.jpg",
+      "sha256": "5d19aa3b36021777aa9168c7d72ba3e42f11350a54c4ae70678bcf53088bc324",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_023_webp.webp",
+      "sha256": "a97f8bacffed2297d17cf5b6e01f415d06de61e9f97f2923f465a426a812d26b",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "webp",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_024_screenshot.png",
+      "sha256": "456ee10a0ffef3719c684c43c1bd5a43b3484a12a66566a4e4e1f002c01b3f55",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "screenshot",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_025_none.png",
+      "sha256": "f975942ac3964fbfd9929d01b16ba1d51c8bbbe72b95b2b51ffbf44b828123a6",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "none",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_026_jpeg_q70.jpg",
+      "sha256": "a0baff33ab59dbdb73ea896178b390dd8bd8c1e4cd74f1b34c182535726d2b99",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q70",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    },
+    {
+      "relpath": "images/ai/openfake/openfake_027_jpeg_q40.jpg",
+      "sha256": "afad37d96e07300332c5eaf0f66cb4ee5ae5dde0112553e0da400c3a5426d908",
+      "label": "ai",
+      "family": "openfake",
+      "corruption": "jpeg_q40",
+      "license": "CC-BY-SA-4.0 / OpenFake terms — ComplexDataLab/OpenFake core test split (label=fake, train-disjoint)"
+    }
+  ]
+}
