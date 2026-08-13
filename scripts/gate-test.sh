@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-shot test gate (E5): unit + eslint + docs-consistency.
+# One-shot test gate (E5): unit + eslint + docs-consistency + gate-full-not-stub.
 # No watch mode. No interactive prompts. Does not print env secrets.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -12,6 +12,7 @@ unit_passed=0
 unit_failed=0
 eslint_ok=0
 docs_ok=0
+not_stub_ok=0
 status="pass"
 
 # --- unit tests (threshold + future co-located *.test.ts) ---
@@ -80,10 +81,23 @@ else
   status="fail"
 fi
 
+# --- AC-STAGE ratchet: gate-full must not be a stub (E9 named test) ---
+set +e
+not_stub_out="$(bash scripts/test-gate-full-not-stub.sh 2>&1)"
+not_stub_rc=$?
+set -e
+if [[ ${not_stub_rc} -eq 0 ]]; then
+  not_stub_ok=1
+else
+  echo "${not_stub_out}" >&2
+  not_stub_ok=0
+  status="fail"
+fi
+
 # --- evidence JSON (counts only; never dump env) ---
 node --input-type=module -e '
   import { writeFileSync } from "node:fs";
-  const [out, status, unitPassed, unitFailed, eslintOk, docsOk] = process.argv.slice(1);
+  const [out, status, unitPassed, unitFailed, eslintOk, docsOk, notStubOk] = process.argv.slice(1);
   const payload = {
     section: "1.2",
     gate: "gate:test",
@@ -95,12 +109,13 @@ node --input-type=module -e '
       unitTotal: Number(unitPassed) + Number(unitFailed),
       eslintOk: Number(eslintOk),
       docsConsistencyOk: Number(docsOk),
+      gateFullNotStubOk: Number(notStubOk),
     },
   };
   writeFileSync(out, JSON.stringify(payload, null, 2) + "\n", "utf8");
-' "${EVIDENCE_DIR}/gate-test.json" "${status}" "${unit_passed}" "${unit_failed}" "${eslint_ok}" "${docs_ok}"
+' "${EVIDENCE_DIR}/gate-test.json" "${status}" "${unit_passed}" "${unit_failed}" "${eslint_ok}" "${docs_ok}" "${not_stub_ok}"
 
-echo "gate-test: status=${status} unit_passed=${unit_passed} unit_failed=${unit_failed} eslint_ok=${eslint_ok} docs_ok=${docs_ok}"
+echo "gate-test: status=${status} unit_passed=${unit_passed} unit_failed=${unit_failed} eslint_ok=${eslint_ok} docs_ok=${docs_ok} not_stub_ok=${not_stub_ok}"
 echo "gate-test: wrote ${EVIDENCE_DIR}/gate-test.json"
 
 if [[ "${status}" != "pass" ]]; then
