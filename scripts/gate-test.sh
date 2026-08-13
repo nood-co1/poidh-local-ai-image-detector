@@ -94,12 +94,26 @@ else
   status="fail"
 fi
 
+# --- AC-REAL: production ONNX pin must not be a dummy (< 20 MB) ---
+no_dummy_ok=0
+set +e
+no_dummy_out="$(bash scripts/check-no-dummy-onnx.sh 2>&1)"
+no_dummy_rc=$?
+set -e
+if [[ ${no_dummy_rc} -eq 0 ]]; then
+  no_dummy_ok=1
+else
+  echo "${no_dummy_out}" >&2
+  no_dummy_ok=0
+  status="fail"
+fi
+
 # --- evidence JSON (counts only; never dump env) ---
 node --input-type=module -e '
   import { writeFileSync } from "node:fs";
-  const [out, status, unitPassed, unitFailed, eslintOk, docsOk, notStubOk] = process.argv.slice(1);
+  const [out, status, unitPassed, unitFailed, eslintOk, docsOk, notStubOk, noDummyOk] = process.argv.slice(1);
   const payload = {
-    section: "1.2",
+    section: "2.2",
     gate: "gate:test",
     status,
     generatedAt: new Date().toISOString(),
@@ -110,12 +124,13 @@ node --input-type=module -e '
       eslintOk: Number(eslintOk),
       docsConsistencyOk: Number(docsOk),
       gateFullNotStubOk: Number(notStubOk),
+      noDummyOnnxOk: Number(noDummyOk),
     },
   };
   writeFileSync(out, JSON.stringify(payload, null, 2) + "\n", "utf8");
-' "${EVIDENCE_DIR}/gate-test.json" "${status}" "${unit_passed}" "${unit_failed}" "${eslint_ok}" "${docs_ok}" "${not_stub_ok}"
+' "${EVIDENCE_DIR}/gate-test.json" "${status}" "${unit_passed}" "${unit_failed}" "${eslint_ok}" "${docs_ok}" "${not_stub_ok}" "${no_dummy_ok}"
 
-echo "gate-test: status=${status} unit_passed=${unit_passed} unit_failed=${unit_failed} eslint_ok=${eslint_ok} docs_ok=${docs_ok} not_stub_ok=${not_stub_ok}"
+echo "gate-test: status=${status} unit_passed=${unit_passed} unit_failed=${unit_failed} eslint_ok=${eslint_ok} docs_ok=${docs_ok} not_stub_ok=${not_stub_ok} no_dummy_ok=${no_dummy_ok}"
 echo "gate-test: wrote ${EVIDENCE_DIR}/gate-test.json"
 
 if [[ "${status}" != "pass" ]]; then

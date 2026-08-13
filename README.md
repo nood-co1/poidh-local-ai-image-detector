@@ -24,16 +24,26 @@ npm run build    # writes dist/ (JS Chrome can load; not raw TypeScript)
 2. Enable **Developer mode** (toggle in the top-right).
 3. Click **Load unpacked**.
 4. Select the **`dist/`** directory (the folder that contains `manifest.json` after build).
-5. Confirm the extension appears in the list. Click its action (toolbar icon) — the popup should say **models not ready**.
+5. Confirm the extension appears in the list. Click its action (toolbar icon) — the popup should say **models not ready** until you run setup.
 
 No local server is required.
+
+### First-run model setup
+
+1. Open the extension popup.
+2. Click **Start setup**. The extension downloads the pinned Community Forensics ViT-S ONNX (`onnx/model.onnx`) and verifies SHA256, then copies ORT wasm/simd into OPFS or the Cache API (never `chrome.storage` for weights).
+3. When finished, the popup shows **Ready** and a short SHA of the production ONNX.
+4. A later launch does **not** re-fetch weight-host URLs while artifacts remain valid (matching hash is a no-op). Use **Retry** / **Re-verify** only to force recovery.
+
+Pinned revision and hashes live in `weights/manifest.json`. Production ONNX under 20 MB is rejected as a dummy.
 
 ### What you should see
 
 | Check | Expected |
 |-------|----------|
 | Extension list | Name **POIDH Local AI Image Detector**, version **0.1.0**, no errors |
-| Popup | Text: **models not ready** |
+| Popup (before setup) | Text: **models not ready** + **Start setup** |
+| Popup (after setup) | **Ready** + SHA256 short hash |
 | Pages | No badge / overlay yet (not implemented yet) |
 
 ### Failure class: Chrome rejects the package

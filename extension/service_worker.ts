@@ -1,10 +1,10 @@
 /**
- * MV3 service worker (section 2.1).
- * Creates the single offscreen document and relays ANALYZE_* (E4) messages.
- *
- * Chrome loads the sibling `service_worker.js` until build copies compiled
- * output into `dist/`.
+ * MV3 service worker (sections 2.1–2.2).
+ * Creates the single offscreen document, relays ANALYZE_* (E4), and
+ * runs one-time artifact setup (OPFS/Cache API — never chrome.storage weights).
  */
+
+import { querySetupStatus, runSetup } from './setup.js';
 
 const OFFSCREEN_URL = 'offscreen.html';
 const OFFSCREEN_TARGET = 'offscreen' as const;
@@ -70,6 +70,18 @@ async function sendToOffscreen<T = unknown>(
   })) as T;
 }
 
+/**
+ * After successful setup, ask offscreen to load the model from the artifact store.
+ */
+async function notifyOffscreenLoadFromStore(): Promise<void> {
+  try {
+    await ensureOffscreenDocument();
+    await sendToOffscreen({ type: 'LOAD_FROM_STORE' });
+  } catch {
+    // Offscreen may not be ready yet; it will tryLoad on its own boot.
+  }
+}
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message === null || typeof message !== 'object') {
     return false;
@@ -101,6 +113,51 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         sendResponse({
           type: 'OFFSCREEN_PONG',
           ready: false,
+          error: detail,
+        });
+      });
+    return true;
+  }
+
+  if (msg.type === 'ARTIFACT_STATUS' || msg.type === 'GET_ARTIFACT_STATUS') {
+    void querySetupStatus()
+      .then((status) => sendResponse(status))
+      .catch((err: unknown) => {
+        const detail = err instanceof Error ? err.message : String(err);
+        sendResponse({
+          type: 'ARTIFACT_STATUS_RESULT',
+          ready: false,
+          sha256: null,
+          sha256Short: null,
+          backend: 'unknown',
+          modelsReadyMarker: false,
+          error: detail,
+        });
+      });
+    return true;
+  }
+
+  if (msg.type === 'SETUP_ARTIFACTS') {
+    const force = Boolean((message as { force?: unknown }).force);
+    void runSetup(force)
+      .then(async (result) => {
+        if (result.ok) {
+          await notifyOffscreenLoadFromStore();
+        }
+        sendResponse(result);
+      })
+      .catch((err: unknown) => {
+        const detail = err instanceof Error ? err.message : String(err);
+        sendResponse({
+          type: 'SETUP_ARTIFACTS_RESULT',
+          ok: false,
+          ready: false,
+          noop: false,
+          sha256: null,
+          sha256Short: null,
+          backend: 'unknown',
+          fetched: [],
+          skipped: [],
           error: detail,
         });
       });

@@ -37,7 +37,13 @@ cp extension/popup.html "${DIST}/popup.html"
 cp extension/popup.js "${DIST}/popup.js"
 cp extension/offscreen.html "${DIST}/offscreen.html"
 
+# Pinned artifact manifest + vendored CF config (num_labels=1 assert).
+mkdir -p "${DIST}/weights"
+cp weights/manifest.json "${DIST}/weights/manifest.json"
+cp weights/config.json "${DIST}/weights/config.json"
+
 # ORT wasm/simd binaries (paths configured via ort.env.wasm.wasmPaths in offscreen).
+# First-run setup copies these into OPFS/Cache after SHA verify (section 2.2).
 if [[ -d "${ORT_DIST}" ]]; then
   cp "${ORT_DIST}/ort-wasm-simd-threaded.wasm" "${DIST}/wasm/" 2>/dev/null || true
   cp "${ORT_DIST}/ort-wasm-simd-threaded.mjs" "${DIST}/wasm/" 2>/dev/null || true
@@ -56,11 +62,15 @@ test -f "${DIST}/popup.html"
 test -f "${DIST}/popup.js"
 test -f "${DIST}/offscreen.html"
 test -f "${DIST}/offscreen.js"
+test -f "${DIST}/weights/manifest.json"
 
 # AC-CSP: wasm-unsafe-eval must be present for ORT wasm.
 grep -q "wasm-unsafe-eval" "${DIST}/manifest.json"
 
 # AC-EP: offscreen permission present.
 grep -q '"offscreen"' "${DIST}/manifest.json"
+
+# AC-ALL: wasm listed in weights manifest.
+grep -q 'ort-wasm-simd' "${DIST}/weights/manifest.json"
 
 echo "gate-build: wrote loadable package under dist/"

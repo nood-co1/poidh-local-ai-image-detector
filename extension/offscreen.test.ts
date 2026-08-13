@@ -28,17 +28,23 @@ describe('offscreen MV3 wiring', () => {
     expect(html).toMatch(/type=["']module["']/);
   });
 
-  it('offscreen.ts uses infer + ort webgpu, not transformers.js', () => {
+  it('offscreen.ts uses infer + artifact-store + ort webgpu, not transformers.js', () => {
     const src = readFileSync(join(root, 'extension/offscreen.ts'), 'utf8');
     expect(src).toMatch(/from ['"]\.\.\/src\/infer\.js['"]/);
+    expect(src).toMatch(/from ['"]\.\.\/src\/artifact-store\.js['"]/);
+    expect(src).toMatch(/loadProductionOnnxBytes|loadFromArtifactStore|LOAD_FROM_STORE/);
     expect(src).toMatch(/onnxruntime-web\/webgpu/);
     expect(src).not.toMatch(/@xenova\/transformers|transformers\.js|image-classification/);
   });
 
-  it('service worker creates offscreen document and relays ANALYZE_IMAGE', () => {
+  it('service worker creates offscreen document, relays ANALYZE_IMAGE, and runs setup', () => {
     const src = readFileSync(join(root, 'extension/service_worker.ts'), 'utf8');
     expect(src).toMatch(/chrome\.offscreen\.createDocument/);
     expect(src).toMatch(/ANALYZE_IMAGE/);
     expect(src).toMatch(/offscreen\.html/);
+    expect(src).toMatch(/SETUP_ARTIFACTS/);
+    expect(src).toMatch(/ARTIFACT_STATUS/);
+    expect(src).toMatch(/from ['"]\.\/setup\.js['"]/);
   });
 });
+

@@ -13,8 +13,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
     "types": ["node", "chrome"]
   },
-  "include": ["src/**/*.ts", "extension/**/*.ts", "eval/**/*.ts"],
+  "include": ["src/**/*.ts", "extension/**/*.ts", "eval/**/*.ts", "weights/**/*.json"],
   "exclude": ["node_modules", "dist"]
 }
