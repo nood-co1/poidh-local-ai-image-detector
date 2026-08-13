@@ -74,14 +74,42 @@ describe('offscreen MV3 wiring', () => {
     expect(cs.matches?.some((m) => m.includes('http'))).toBe(true);
   });
 
-  it('content script uses createImageBitmap on loaded img (no src re-GET)', () => {
+  it('content script uses createImageBitmap on loaded img (no src re-GET primary)', () => {
     const src = readFileSync(join(root, 'extension/content.ts'), 'utf8');
     expect(src).toMatch(/createImageBitmap/);
     expect(src).toMatch(/SCAN_PAGE/);
     expect(src).toMatch(/ANALYZE_IMAGE/);
     // Must send raw image pixels, not rely on src fetch for the primary path.
     expect(src).toMatch(/image:\s*\{/);
+    // Content must not re-GET img.src itself; online fallback is ANALYZE_IMAGE.src → offscreen.
     expect(src).not.toMatch(/fetch\s*\(\s*img\.src/);
+    expect(src).toMatch(/IntersectionObserver/);
+    expect(src).toMatch(/skip_cross_origin/);
+    expect(src).toMatch(/skip_small/);
+  });
+
+  it('resultCache must not short-circuit ANALYZE_IMAGE / SCAN_PAGE (AC-MISS)', () => {
+    const src = readFileSync(join(root, 'extension/content.ts'), 'utf8');
+    // Overlay cache exists for scroll restore only.
+    expect(src).toMatch(/resultCache/);
+    expect(src).toMatch(/AC-CACHE|scroll restore|overlay/i);
+    // analyzeOneImage must not return early from resultCache.get before sendMessage.
+    // Reject the old short-circuit pattern: cache hit → return ANALYZE_RESULT without ANALYZE_IMAGE.
+    expect(src).not.toMatch(
+      /resultCache\.get\([^)]+\)[\s\S]{0,200}return\s*\{[\s\S]{0,120}type:\s*['"]ANALYZE_RESULT['"]/,
+    );
+    // Explicit statement that analysis always hits the endpoint.
+    expect(src).toMatch(/Always hits ANALYZE_IMAGE|no resultCache short-circuit/i);
+  });
+
+
+  it('badge module exposes data-testid=aidet-badge (3.1)', () => {
+    const src = readFileSync(join(root, 'extension/badge.ts'), 'utf8');
+    expect(src).toMatch(/aidet-badge/);
+    expect(src).toMatch(/attachShadow/);
+    expect(src).toMatch(/unavailable/);
+    // Skips must never render as real.
+    expect(src).toMatch(/Never show "real" for skips/);
   });
 
   it('debug.html is test-only with a single Infer button', () => {

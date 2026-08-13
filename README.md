@@ -44,7 +44,7 @@ Pinned revision and hashes live in `weights/manifest.json`. Production ONNX unde
 | Extension list | Name **POIDH Local AI Image Detector**, version **0.1.0**, no errors |
 | Popup (before setup) | Text: **models not ready** + **Start setup** |
 | Popup (after setup) | **Ready** + SHA256 short hash |
-| Pages | No badge / overlay yet (not implemented yet) |
+| Pages | Eligible images (≥64px CSS) show `aidet-badge` scores automatically after setup |
 
 ### Failure class: Chrome rejects the package
 
