@@ -326,8 +326,9 @@ async function collectBadgeTexts(page: Page): Promise<string[]> {
   });
 }
 
+/** Score-only or score+label (3.2: "0.65 ai"). */
 function isNumericBadge(t: string): boolean {
-  return /^(0|1)(\.\d+)?$/.test(t);
+  return /^(0|1)(\.\d+)?(\s+(ai|real))?$/i.test(t);
 }
 
 test.describe('3.1 autoscan cross-origin (AC-CORS)', () => {

@@ -31,7 +31,7 @@ npx esbuild \
   --conditions=onnxruntime-web-use-extern-wasm \
   --outfile="${DIST}/offscreen.js"
 
-# Content script: displayed-pixel scan path (2.3; overlay lands in 3.1).
+# Content script: displayed-pixel scan path (2.3; overlay + label in 3.1/3.2).
 npx esbuild \
   extension/content.ts \
   --bundle \
@@ -40,10 +40,18 @@ npx esbuild \
   --target=chrome120 \
   --outfile="${DIST}/content.js"
 
+# Popup: setup + pause + threshold rule (bundles src/label.ts for A1 text).
+npx esbuild \
+  extension/popup.js \
+  --bundle \
+  --format=esm \
+  --platform=browser \
+  --target=chrome120 \
+  --outfile="${DIST}/popup.js"
+
 # Copy static extension assets unchanged.
 cp extension/manifest.json "${DIST}/manifest.json"
 cp extension/popup.html "${DIST}/popup.html"
-cp extension/popup.js "${DIST}/popup.js"
 cp extension/offscreen.html "${DIST}/offscreen.html"
 cp extension/debug.html "${DIST}/debug.html"
 cp extension/debug.js "${DIST}/debug.js"

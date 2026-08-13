@@ -15,7 +15,10 @@ import {
   rgbaToRgb,
   type RgbImage,
 } from './preprocess.js';
-import { THRESHOLD } from './threshold.js';
+import { labelFromScore } from './label.js';
+
+// Re-export A1 helper so existing importers keep working; source of truth is label.ts.
+export { labelFromScore } from './label.js';
 
 // ---------------------------------------------------------------------------
 // E4 message contract
@@ -154,11 +157,6 @@ export function sigmoid(logit: number): number {
   }
   const z = Math.exp(logit);
   return z / (1 + z);
-}
-
-/** A1 decision: AI iff score >= THRESHOLD, else real. */
-export function labelFromScore(score: number): 'ai' | 'real' {
-  return score >= THRESHOLD ? 'ai' : 'real';
 }
 
 /** Validate ANALYZE_IMAGE shape (E4 — Zod-equivalent). */

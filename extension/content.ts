@@ -1,5 +1,5 @@
 /**
- * Content script autoscan overlay (section 3.1; pixel path from 2.3).
+ * Content script autoscan overlay (sections 3.1–3.2; pixel path from 2.3).
  *
  * Primary path (E2): already-displayed bitmaps via createImageBitmap / canvas
  * of the loaded <img>. GET of the displayed URL is **online fallback only**
@@ -9,6 +9,9 @@
  * skip_small: no badge, never labeled real.
  * Overlay cache (URL+size+dHash): scroll restore only — never short-circuits
  * ANALYZE_IMAGE / SCAN_PAGE (AC-MISS must hit offscreen after CLEAR_ARTIFACTS).
+ *
+ * Labels use src/label.ts (THRESHOLD). Pause flag lives in chrome.storage.local
+ * (AC-PAUSE / G-REENTRY) — when paused, no new badges are created.
  */
 
 import {
@@ -19,6 +22,11 @@ import {
   MIN_ELIGIBLE_CSS_PX,
   cssSize,
 } from './badge.js';
+import {
+  formatBadgeText,
+  labelFromScore,
+  PAUSE_STORAGE_KEY,
+} from '../src/label.js';
 
 export { BADGE_TESTID, MIN_ELIGIBLE_CSS_PX, isEligibleImage, cssSize };
 
@@ -72,6 +80,34 @@ const inFlight = new WeakSet<HTMLImageElement>();
 
 /** Images already processed this session (or skip_small). */
 const settled = new WeakSet<HTMLImageElement>();
+
+/**
+ * Pause scanning (section 3.2). When true, autoscan / SCAN_PAGE create no new
+ * badges. Persisted via chrome.storage.local (G-REENTRY).
+ */
+let scanningPaused = false;
+
+async function loadPauseFlag(): Promise<void> {
+  try {
+    const stored = await chrome.storage.local.get(PAUSE_STORAGE_KEY);
+    scanningPaused = Boolean(stored[PAUSE_STORAGE_KEY]);
+  } catch {
+    scanningPaused = false;
+  }
+}
+
+function watchPauseFlag(): void {
+  try {
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area !== 'local') return;
+      const ch = changes[PAUSE_STORAGE_KEY];
+      if (!ch) return;
+      scanningPaused = Boolean(ch.newValue);
+    });
+  } catch {
+    // storage API unavailable in non-extension unit contexts
+  }
+}
 
 /**
  * Serialize ANALYZE_IMAGE through the single offscreen ORT session.
@@ -229,7 +265,12 @@ function ensureBadge(img: HTMLImageElement): BadgeHandle {
 function applyCacheEntry(img: HTMLImageElement, entry: CacheEntry): void {
   const badge = ensureBadge(img);
   if (entry.kind === 'score') {
-    badge.setState({ kind: 'score', score: entry.score, label: entry.label });
+    // Recompute label from score via label.ts (AC-A1).
+    badge.setState({
+      kind: 'score',
+      score: entry.score,
+      label: labelFromScore(entry.score),
+    });
   } else {
     badge.setState({ kind: 'unavailable', reason: entry.skip_reason });
   }
@@ -249,6 +290,18 @@ export async function analyzeOneImage(
   index: number,
 ): Promise<AnalyzeResultLike> {
   const imageId = imageIdFor(img, index);
+
+  // AC-PAUSE: while paused, do not create new badges or hit ANALYZE_IMAGE.
+  if (scanningPaused) {
+    return {
+      type: 'ANALYZE_RESULT',
+      scanId,
+      imageId,
+      score: 0,
+      label: 'skip',
+      skip_reason: 'paused',
+    };
+  }
 
   // skip_small: no badge, never label real (negative AC).
   if (!isEligibleImage(img)) {
@@ -405,22 +458,24 @@ function finalizeFromResponse(
       };
     }
 
+    // AC-A1: decide via src/label.ts THRESHOLD only (never trust a drifted label).
+    const decided = labelFromScore(score);
     const entry: CacheEntry = {
       kind: 'score',
       score,
-      label: label === 'ai' || label === 'real' ? label : 'real',
+      label: decided,
       skip_reason: null,
     };
     // Overlay cache for scroll restore (AC-CACHE) — not used to skip ANALYZE_IMAGE.
     resultCache.set(key, entry);
     resultCache.set(quickKey, entry);
-    badge.setState({ kind: 'score', score: entry.score, label: entry.label });
+    badge.setState({ kind: 'score', score: entry.score, label: decided });
     return {
       type: 'ANALYZE_RESULT',
       scanId,
       imageId,
       score: entry.score,
-      label: entry.label,
+      label: decided,
       skip_reason: null,
     };
   }
@@ -456,6 +511,16 @@ function finalizeFromResponse(
 export async function scanLoadedImages(
   scanId: string,
 ): Promise<ScanPageResult> {
+  // AC-PAUSE: explicit scan also creates no new badges while paused.
+  if (scanningPaused) {
+    return {
+      type: 'SCAN_PAGE_RESULT',
+      ok: true,
+      scanId,
+      results: [],
+    };
+  }
+
   const imgs = Array.from(document.images).filter(
     (img) => img.complete && img.naturalWidth > 0 && img.naturalHeight > 0,
   );
@@ -531,11 +596,17 @@ async function processImage(img: HTMLImageElement, index: number): Promise<void>
 
   if (settled.has(img)) {
     // AC-CACHE: restore badge text from overlay cache; do not re-ANALYZE.
+    // Pause does not hide already-settled badges.
     const q = resultCache.get(cacheKeyNoPixels(img));
     if (q && isEligibleImage(img)) {
       applyCacheEntry(img, q);
     }
     badges.get(img)?.reposition();
+    return;
+  }
+
+  // AC-PAUSE: no new badges while scanning is paused.
+  if (scanningPaused) {
     return;
   }
 
@@ -637,14 +708,16 @@ function observeImages(): void {
   window.addEventListener('resize', repositionAll, { passive: true });
 }
 
-// Boot autoscan (AC-AUTO: no click required).
+// Boot autoscan (AC-AUTO: no click required). Load pause flag first (AC-PAUSE).
 if (typeof document !== 'undefined') {
+  const boot = (): void => {
+    watchPauseFlag();
+    void loadPauseFlag().then(() => observeImages());
+  };
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => observeImages(), {
-      once: true,
-    });
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
   } else {
-    observeImages();
+    boot();
   }
 }
 
@@ -682,6 +755,64 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       ).length,
       imagesTotal: document.images.length,
       scanId: pageScanId,
+      scanningPaused,
+    });
+    return false;
+  }
+
+  /**
+   * E2e/test: apply a known score to a page image so AC-A1 boundary (0.64/0.65)
+   * can be asserted without depending on model logits. Still uses label.ts.
+   */
+  if (msg.type === 'SET_BADGE_SCORE') {
+    const raw = message as {
+      type?: string;
+      score?: unknown;
+      imageId?: unknown;
+      index?: unknown;
+    };
+    const score =
+      typeof raw.score === 'number' && Number.isFinite(raw.score)
+        ? raw.score
+        : NaN;
+    if (!Number.isFinite(score)) {
+      sendResponse({ ok: false, error: 'score (number) required' });
+      return false;
+    }
+    const imgs = Array.from(document.images);
+    let img: HTMLImageElement | undefined;
+    if (typeof raw.imageId === 'string' && raw.imageId.length > 0) {
+      img = imgs.find((el, i) => imageIdFor(el, i) === raw.imageId);
+    }
+    if (!img && typeof raw.index === 'number' && raw.index >= 0) {
+      img = imgs[raw.index];
+    }
+    if (!img) {
+      img = imgs.find((el) => isEligibleImage(el));
+    }
+    if (!img || !isEligibleImage(img)) {
+      sendResponse({ ok: false, error: 'no eligible image' });
+      return false;
+    }
+    const decided = labelFromScore(score);
+    const badge = ensureBadge(img);
+    badge.setState({ kind: 'score', score, label: decided });
+    const entry: CacheEntry = {
+      kind: 'score',
+      score,
+      label: decided,
+      skip_reason: null,
+    };
+    resultCache.set(cacheKeyNoPixels(img), entry);
+    // Settle so concurrent autoscan does not overwrite injected scores (e2e AC-A1).
+    settled.add(img);
+    inFlight.delete(img);
+    sendResponse({
+      ok: true,
+      score,
+      label: decided,
+      text: formatBadgeText(score, decided),
+      imageId: imageIdFor(img, imgs.indexOf(img)),
     });
     return false;
   }

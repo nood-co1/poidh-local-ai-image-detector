@@ -1,9 +1,16 @@
 /**
- * Shadow-DOM score badge (section 3.1).
+ * Shadow-DOM score badge (sections 3.1 + 3.2).
  * Primary UI for autoscan — no orphan badge without ANALYZE_RESULT / skip path.
  *
- * Skips and errors render as "unavailable", never coerced to "real" (E2 / R-SKIP-NOT-REAL).
+ * Success text: numeric score in [0,1] + ai|real from label.ts (A1 / THRESHOLD).
+ * Skips and errors render as "unavailable", never coerced to "real" (R-SKIP-NOT-REAL).
  */
+
+import {
+  formatBadgeText,
+  labelFromScore,
+  type DecisionLabel,
+} from '../src/label.js';
 
 export const BADGE_TESTID = 'aidet-badge';
 
@@ -12,7 +19,7 @@ export const MIN_ELIGIBLE_CSS_PX = 64;
 
 export type BadgeState =
   | { kind: 'loading' }
-  | { kind: 'score'; score: number; label: string }
+  | { kind: 'score'; score: number; label?: DecisionLabel | string }
   | { kind: 'unavailable'; reason?: string };
 
 export interface BadgeHandle {
@@ -147,11 +154,13 @@ function makeHandle(
       return;
     }
     badge.dataset['state'] = 'score';
-    badge.dataset['label'] = state.label;
-    // Numeric score is the primary visible success signal (AC-TESTID / AC-NUM).
+    // Always decide via label.ts (AC-A1) — do not trust caller label alone.
     const n = Number.isFinite(state.score) ? state.score : 0;
-    badge.textContent = `${n.toFixed(2)}`;
-    badge.title = `${state.label} ${n.toFixed(4)}`;
+    const decided: DecisionLabel = labelFromScore(n);
+    badge.dataset['label'] = decided;
+    // AC-NUM: numeric score + ai|real visible on the badge.
+    badge.textContent = formatBadgeText(n, decided);
+    badge.title = `${decided} ${n.toFixed(4)}`;
   };
 
   const reposition = (): void => {

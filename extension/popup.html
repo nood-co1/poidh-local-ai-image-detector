@@ -61,16 +61,27 @@
         color: #a30;
         white-space: pre-wrap;
       }
+      #threshold-rule {
+        margin: 0 0 10px;
+        font-size: 12px;
+        color: #444;
+      }
+      #pause {
+        margin-top: 8px;
+        width: 100%;
+      }
     </style>
   </head>
   <body>
     <h1>POIDH AI Detector</h1>
     <p id="status">models not ready</p>
     <p id="sha"></p>
+    <p id="threshold-rule"></p>
     <div class="actions">
       <button type="button" id="start" class="primary">Start setup</button>
       <button type="button" id="retry" hidden>Retry</button>
     </div>
+    <button type="button" id="pause">Pause scanning</button>
     <p id="error"></p>
     <script type="module" src="popup.js"></script>
   </body>

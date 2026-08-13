@@ -9,13 +9,17 @@
  * - Gate passes only if BA >= 0.750 **and** skip-rate <= 0.10
  */
 
-import { THRESHOLD } from '../src/threshold.js';
+import {
+  labelFromScore,
+  THRESHOLD,
+  type DecisionLabel,
+} from '../src/label.js';
+
+export { THRESHOLD };
+export type { DecisionLabel };
 
 /** Ground-truth proxy label. */
 export type ProxyLabel = 'real' | 'ai';
-
-/** Predicted decision label (A1). */
-export type DecisionLabel = 'real' | 'ai';
 
 /** One attempted row outcome. */
 export type AttemptOutcome =
@@ -59,11 +63,10 @@ export const BA_MIN = 0.75;
 export const SKIP_RATE_MAX = 0.1;
 
 /**
- * A1 decision: AI iff score >= THRESHOLD, else real.
- * Imports THRESHOLD — never hardcode 0.65 here.
+ * A1 decision via src/label.ts (THRESHOLD only — never hardcode 0.65).
  */
 export function decide(score: number): DecisionLabel {
-  return score >= THRESHOLD ? 'ai' : 'real';
+  return labelFromScore(score);
 }
 
 /**

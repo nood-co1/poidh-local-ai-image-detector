@@ -30,16 +30,20 @@ fi
 export POIDH_ONNX_CACHE="${ONNX_CACHE}"
 
 export CI="${CI:-1}"
-echo "20-e2e: playwright autoscan same-origin + cross-origin (retries=0)"
+echo "20-e2e: playwright autoscan + threshold + pause (retries=0)"
 if command -v xvfb-run >/dev/null 2>&1; then
   xvfb-run -a npx playwright test \
     e2e/autoscan-sameorigin.spec.ts \
     e2e/autoscan-crossorigin.spec.ts \
+    e2e/threshold.spec.ts \
+    e2e/pause-reentry.spec.ts \
     --retries=0
 else
   npx playwright test \
     e2e/autoscan-sameorigin.spec.ts \
     e2e/autoscan-crossorigin.spec.ts \
+    e2e/threshold.spec.ts \
+    e2e/pause-reentry.spec.ts \
     --retries=0
 fi
 

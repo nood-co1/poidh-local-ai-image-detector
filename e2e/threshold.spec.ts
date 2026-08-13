@@ -1,11 +1,12 @@
 /**
- * Spec 3.1 — Autoscan same-origin (soul 4 JOB-SCAN-01).
+ * Spec 3.2 — Score and threshold (soul 5 JOB-SCORE-01).
  *
- * Visit mixed.html; eligible images (>= 64px CSS) get data-testid=aidet-badge
- * without clicking. Primary path: displayed pixels. Offline scan still scores.
- * skip_small is not labeled real. Cache survives scroll away/back.
+ * - AC-NUM: badge shows numeric score in [0,1]
+ * - AC-A1: label from src/label.ts THRESHOLD only (0.64 real, 0.65 ai)
+ * - AC-ERR: errors/skips are "unavailable", never Real
  *
- * retries: 0 (claim suite). Does not mock infer().
+ * Injected results for the 0.64/0.65 boundary; live scan for real path.
+ * retries: 0 (claim suite).
  */
 
 import { createServer, type Server } from 'node:http';
@@ -29,6 +30,14 @@ import {
   type Page,
   type Worker,
 } from '@playwright/test';
+
+import {
+  formatBadgeText,
+  labelFromScore,
+  PAUSE_STORAGE_KEY,
+  THRESHOLD,
+  thresholdRuleText,
+} from '../src/label.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
@@ -109,7 +118,7 @@ async function ensureDistBuilt(): Promise<void> {
     existsSync(join(DIST, 'manifest.json')) &&
     existsSync(join(DIST, 'service_worker.js')) &&
     existsSync(join(DIST, 'content.js')) &&
-    existsSync(join(DIST, 'offscreen.js')) &&
+    existsSync(join(DIST, 'popup.js')) &&
     existsSync(join(DIST, 'harness.html'))
   ) {
     return;
@@ -124,7 +133,7 @@ const test = base.extend<ExtensionFixtures>({
     await ensureDistBuilt();
     const userDataDir = join(
       tmpdir(),
-      `poidh-pw-auto-so-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      `poidh-pw-threshold-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     );
     mkdirSync(userDataDir, { recursive: true });
 
@@ -272,30 +281,6 @@ async function waitImagesLoaded(page: Page): Promise<number> {
   return page.evaluate(() => document.images.length);
 }
 
-async function goOfflineAndBlockLocalhost(context: BrowserContext): Promise<void> {
-  await context.setOffline(true);
-  await context.route('**/*', async (route) => {
-    const url = route.request().url();
-    if (url.startsWith('chrome-extension://') || url.startsWith('blob:')) {
-      await route.continue();
-      return;
-    }
-    if (
-      url.includes('127.0.0.1') ||
-      url.includes('localhost') ||
-      url.startsWith('http://[::1]')
-    ) {
-      await route.abort('connectionfailed');
-      return;
-    }
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      await route.abort('internetdisconnected');
-      return;
-    }
-    await route.continue();
-  });
-}
-
 async function findFixtureTabId(
   harness: Page,
   fixtureBaseUrl: string,
@@ -311,186 +296,184 @@ async function findFixtureTabId(
   return tabId as number;
 }
 
-/** Badges live in open shadow roots; collect text via page evaluate. */
 async function collectBadgeTexts(page: Page): Promise<string[]> {
   return page.evaluate(() => {
     const out: string[] = [];
-    const hosts = Array.from(
+    for (const host of Array.from(
       document.querySelectorAll('[data-aidet-badge-host]'),
-    );
-    for (const host of hosts) {
-      const badge = host.shadowRoot?.querySelector(
-        '[data-testid="aidet-badge"]',
-      );
-      if (badge?.textContent) out.push(badge.textContent.trim());
+    )) {
+      const t = host.shadowRoot
+        ?.querySelector('[data-testid="aidet-badge"]')
+        ?.textContent?.trim();
+      if (t) out.push(t);
     }
-    // Also pierce any non-host testid (defensive).
-    document.querySelectorAll('[data-testid="aidet-badge"]').forEach((el) => {
-      const t = el.textContent?.trim();
-      if (t && !out.includes(t)) out.push(t);
-    });
     return out;
   });
 }
 
-/** Score-only or score+label (3.2: "0.65 ai"). */
-function isNumericBadge(t: string): boolean {
-  return /^(0|1)(\.\d+)?(\s+(ai|real))?$/i.test(t);
-}
-
-function parseBadgeScore(t: string): number | null {
-  const m = t.trim().match(/^(0|1)(\.\d+)?/);
-  if (!m) return null;
-  const n = Number(m[0]);
-  return Number.isFinite(n) ? n : null;
-}
-
-async function waitForNumericBadges(
+async function collectBadgeDetails(
   page: Page,
-  minCount: number,
-  timeout = 120_000,
-): Promise<string[]> {
-  await expect
-    .poll(
-      async () => {
-        const texts = await collectBadgeTexts(page);
-        const numeric = texts.filter(isNumericBadge);
-        return numeric.length;
-      },
-      { timeout, message: 'waiting for numeric aidet-badge overlays' },
-    )
-    .toBeGreaterThanOrEqual(minCount);
-  return collectBadgeTexts(page);
+): Promise<Array<{ text: string; label: string | null; state: string | null }>> {
+  return page.evaluate(() => {
+    const out: Array<{
+      text: string;
+      label: string | null;
+      state: string | null;
+    }> = [];
+    for (const host of Array.from(
+      document.querySelectorAll('[data-aidet-badge-host]'),
+    )) {
+      const badge = host.shadowRoot?.querySelector(
+        '[data-testid="aidet-badge"]',
+      ) as HTMLElement | null;
+      if (!badge) continue;
+      out.push({
+        text: badge.textContent?.trim() ?? '',
+        label: badge.dataset['label'] ?? null,
+        state: badge.dataset['state'] ?? null,
+      });
+    }
+    return out;
+  });
 }
 
-test.describe('3.1 autoscan same-origin (JOB-SCAN-01)', () => {
-  test('AC-AUTO + AC-TESTID: badges appear without click on mixed.html', async ({
-    context,
-    harness,
-    fixtureBaseUrl,
-  }) => {
-    await runSetup(harness);
+function isScoreLabelBadge(t: string): boolean {
+  return /^(0|1)(\.\d+)?\s+(ai|real)$/i.test(t);
+}
 
-    const page = await context.newPage();
-    await page.goto(`${fixtureBaseUrl}/mixed.html`, {
-      waitUntil: 'domcontentloaded',
-    });
-    const imageCount = await waitImagesLoaded(page);
-    expect(imageCount).toBeGreaterThanOrEqual(4);
+function parseScoreLabel(t: string): { score: number; label: string } | null {
+  const m = t.trim().match(/^((?:0|1)(?:\.\d+)?)\s+(ai|real)$/i);
+  if (!m) return null;
+  return { score: Number(m[1]), label: m[2]!.toLowerCase() };
+}
 
-    // AC-AUTO: no click, no SCAN_TAB — IntersectionObserver autoscan only.
-    const texts = await waitForNumericBadges(page, 4);
-    const numeric = texts.filter(isNumericBadge);
-    expect(numeric.length).toBeGreaterThanOrEqual(4);
-
-    // AC-TESTID: each badge has text content with a score in [0,1].
-    for (const t of numeric) {
-      expect(t.length).toBeGreaterThan(0);
-      const n = parseBadgeScore(t);
-      expect(n).not.toBeNull();
-      expect(n!).toBeGreaterThanOrEqual(0);
-      expect(n!).toBeLessThanOrEqual(1);
-    }
-
-    await page.close();
+test.describe('3.2 score and threshold (JOB-SCORE-01)', () => {
+  test('module boundary: 0.64 real, 0.65 ai (THRESHOLD)', () => {
+    expect(THRESHOLD).toBe(0.65);
+    expect(labelFromScore(0.64)).toBe('real');
+    expect(labelFromScore(0.65)).toBe('ai');
+    expect(formatBadgeText(0.64)).toBe('0.64 real');
+    expect(formatBadgeText(0.65)).toBe('0.65 ai');
+    expect(thresholdRuleText()).toBe('AI if >= 65%');
   });
 
-  test('AC-OFFLINE-SCAN: load → offline → scan still yields numeric badges', async ({
+  test('AC-A1 + AC-NUM: injected 0.64/0.65 scores label via label.ts', async ({
     context,
     harness,
     fixtureBaseUrl,
+    extensionId,
   }) => {
-    await runSetup(harness);
-
+    // No model setup required — injected scores exercise badge + label path.
     const page = await context.newPage();
     await page.goto(`${fixtureBaseUrl}/mixed.html`, {
       waitUntil: 'domcontentloaded',
     });
     await waitImagesLoaded(page);
 
-    // Give autoscan a moment if it races; then force offline and re-scan.
-    await page.waitForTimeout(500);
+    // Wait for content script to attach.
+    await expect
+      .poll(
+        async () => {
+          const tabId = await findFixtureTabId(harness, fixtureBaseUrl);
+          const pong = await harness.evaluate(async (id) => {
+            try {
+              return (await chrome.tabs.sendMessage(id, {
+                type: 'CONTENT_PING',
+              })) as { type?: string } | null;
+            } catch {
+              return null;
+            }
+          }, tabId);
+          return pong?.type === 'CONTENT_PONG';
+        },
+        { timeout: 30_000, message: 'content script not ready' },
+      )
+      .toBe(true);
 
-    await goOfflineAndBlockLocalhost(context);
+    const tabId = await findFixtureTabId(harness, fixtureBaseUrl);
 
-    const blocked = await page.evaluate(async () => {
-      try {
-        const res = await fetch('assets/real_a.png', { cache: 'no-store' });
-        return { ok: res.ok };
-      } catch {
-        return { ok: false };
-      }
-    });
-    expect(blocked.ok).toBe(false);
+    const inject = async (score: number, index: number) => {
+      return harness.evaluate(
+        async ({ id, score: s, index: i }) => {
+          return (await chrome.tabs.sendMessage(id, {
+            type: 'SET_BADGE_SCORE',
+            score: s,
+            index: i,
+          })) as {
+            ok?: boolean;
+            label?: string;
+            text?: string;
+            error?: string;
+          };
+        },
+        { id: tabId, score, index },
+      );
+    };
 
-    const fixtureTabId = await findFixtureTabId(harness, fixtureBaseUrl);
-    const scanId = `offline-auto-${Date.now()}`;
-    const scan = await extensionSend<{
-      ok?: boolean;
-      results?: Array<{ type?: string; score?: number; label?: string }>;
-      error?: string;
-    }>(harness, {
-      type: 'SCAN_TAB',
-      tabId: fixtureTabId,
-      scanId,
-    });
-    expect(scan.ok, scan.error).toBe(true);
-
-    const texts = await waitForNumericBadges(page, 1, 60_000);
-    const numeric = texts.filter(isNumericBadge);
-    expect(
-      numeric.length,
-      `expected numeric badges offline, got: ${JSON.stringify(texts)}`,
-    ).toBeGreaterThanOrEqual(1);
-
-    // Fail closed: no badge text that pretends skip is real without a score path.
-    for (const t of texts) {
-      if (t === 'unavailable' || t === '…') continue;
-      expect(isNumericBadge(t)).toBe(true);
-    }
-
-    await page.close();
-  });
-
-  test('AC-CACHE: scroll away/back keeps numeric badge (no real flicker)', async ({
-    context,
-    harness,
-    fixtureBaseUrl,
-  }) => {
-    await runSetup(harness);
-
-    const page = await context.newPage();
-    await page.goto(`${fixtureBaseUrl}/mixed.html`, {
-      waitUntil: 'domcontentloaded',
-    });
-    await waitImagesLoaded(page);
-
-    const before = await waitForNumericBadges(page, 4);
-    const beforeNumeric = before.filter(isNumericBadge);
-
-    // Scroll far away then back.
-    await page.evaluate(() => window.scrollTo(0, 5000));
-    await page.waitForTimeout(200);
-    await page.evaluate(() => window.scrollTo(0, 0));
+    // Pause first so autoscan cannot race and overwrite injected scores.
+    await harness.evaluate(async (key) => {
+      await chrome.storage.local.set({ [key]: true });
+    }, PAUSE_STORAGE_KEY);
+    // Brief settle for storage.onChanged in content scripts.
     await page.waitForTimeout(300);
 
-    const after = await collectBadgeTexts(page);
-    const afterNumeric = after.filter(isNumericBadge);
-    expect(afterNumeric.length).toBeGreaterThanOrEqual(beforeNumeric.length);
+    const r64 = await inject(0.64, 0);
+    expect(r64.ok, r64.error).toBe(true);
+    expect(r64.label).toBe('real');
+    expect(r64.text).toBe(formatBadgeText(0.64));
+    expect(r64.text).toBe('0.64 real');
 
-    // Cached scores must still be numeric — never blank then "real".
-    for (const t of afterNumeric) {
-      expect(isNumericBadge(t)).toBe(true);
+    const r65 = await inject(0.65, 1);
+    expect(r65.ok, r65.error).toBe(true);
+    expect(r65.label).toBe('ai');
+    expect(r65.text).toBe(formatBadgeText(0.65));
+    expect(r65.text).toBe('0.65 ai');
+
+    await expect
+      .poll(
+        async () => {
+          const texts = await collectBadgeTexts(page);
+          return (
+            texts.includes('0.64 real') && texts.includes('0.65 ai')
+          );
+        },
+        { timeout: 10_000, message: 'injected score badges not visible' },
+      )
+      .toBe(true);
+
+    const details = await collectBadgeDetails(page);
+    const texts = details.map((d) => d.text);
+    expect(texts).toEqual(expect.arrayContaining(['0.64 real', '0.65 ai']));
+
+    for (const d of details) {
+      if (!isScoreLabelBadge(d.text)) continue;
+      const parsed = parseScoreLabel(d.text);
+      expect(parsed).not.toBeNull();
+      expect(parsed!.label).toBe(labelFromScore(parsed!.score));
+      expect(d.label).toBe(parsed!.label);
+      expect(d.state).toBe('score');
     }
+
+    // Popup rule line from the same module.
+    const popup = await context.newPage();
+    await popup.goto(`chrome-extension://${extensionId}/popup.html`, {
+      waitUntil: 'domcontentloaded',
+    });
+    await expect(popup.locator('#threshold-rule')).toHaveText(
+      thresholdRuleText(),
+    );
+    await expect(popup.locator('#threshold-rule')).toHaveText('AI if >= 65%');
+    await popup.close();
 
     await page.close();
   });
 
-  test('Negative: skip_small not labeled real', async ({
+  test('AC-NUM + AC-A1: live scan badges show score+label consistent with THRESHOLD', async ({
     context,
     harness,
     fixtureBaseUrl,
   }) => {
+    test.setTimeout(240_000);
     await runSetup(harness);
 
     const page = await context.newPage();
@@ -498,98 +481,81 @@ test.describe('3.1 autoscan same-origin (JOB-SCAN-01)', () => {
       waitUntil: 'domcontentloaded',
     });
     await waitImagesLoaded(page);
-    await waitForNumericBadges(page, 1);
 
-    // Inject a tiny icon well under 64px CSS.
-    await page.evaluate(() => {
-      const img = document.createElement('img');
-      img.src = 'assets/real_a.png';
-      img.width = 16;
-      img.height = 12;
-      img.style.width = '16px';
-      img.style.height = '12px';
-      img.alt = 'tiny-icon';
-      img.setAttribute('data-image-id', 'tiny-skip-small');
-      img.id = 'tiny-skip-small';
-      document.body.appendChild(img);
-    });
-    await page.waitForFunction(() => {
-      const el = document.getElementById('tiny-skip-small') as HTMLImageElement | null;
-      return Boolean(el && el.complete && el.naturalWidth > 0);
-    });
+    await expect
+      .poll(
+        async () => {
+          const texts = await collectBadgeTexts(page);
+          return texts.filter(isScoreLabelBadge).length;
+        },
+        {
+          timeout: 120_000,
+          message: 'waiting for score+label aidet-badge overlays',
+        },
+      )
+      .toBeGreaterThanOrEqual(1);
 
-    // Allow autoscan to observe the new node.
-    await page.waitForTimeout(1500);
+    const details = await collectBadgeDetails(page);
+    const scored = details.filter((d) => isScoreLabelBadge(d.text));
+    expect(scored.length).toBeGreaterThanOrEqual(1);
 
-    const tinyState = await page.evaluate(() => {
-      const tiny = document.getElementById(
-        'tiny-skip-small',
-      ) as HTMLImageElement | null;
-      if (!tiny) return { found: false as const };
-      const hosts = Array.from(
-        document.querySelectorAll('[data-aidet-badge-host]'),
-      ) as Array<HTMLElement & { __aidetImg?: HTMLImageElement }>;
-      // Hosts store img weakly via closure; count badges near tiny rect.
-      const tRect = tiny.getBoundingClientRect();
-      let badgeNearTiny = 0;
-      const badgeTexts: string[] = [];
-      for (const host of hosts) {
-        const hRect = host.getBoundingClientRect();
-        const near =
-          Math.abs(hRect.top - tRect.top) < 40 &&
-          Math.abs(hRect.left - tRect.left) < 40;
-        const text =
-          host.shadowRoot
-            ?.querySelector('[data-testid="aidet-badge"]')
-            ?.textContent?.trim() ?? '';
-        if (near && text) {
-          badgeNearTiny += 1;
-          badgeTexts.push(text);
-        }
-      }
-      return { found: true as const, badgeNearTiny, badgeTexts };
-    });
-
-    expect(tinyState.found).toBe(true);
-    // No score badge on skip_small; if anything appears it must not be "real".
-    if (tinyState.badgeNearTiny && tinyState.badgeNearTiny > 0) {
-      for (const t of tinyState.badgeTexts ?? []) {
-        expect(t.toLowerCase()).not.toBe('real');
-        expect(t).toBe('unavailable');
-      }
+    for (const d of scored) {
+      const parsed = parseScoreLabel(d.text);
+      expect(parsed, d.text).not.toBeNull();
+      expect(parsed!.score).toBeGreaterThanOrEqual(0);
+      expect(parsed!.score).toBeLessThanOrEqual(1);
+      // AC-A1: visible label matches labelFromScore from src/label.ts.
+      expect(parsed!.label).toBe(labelFromScore(parsed!.score));
+      expect(d.label).toBe(parsed!.label);
     }
 
-    // Explicit SCAN_PAGE must also report skip_small, never real.
-    const fixtureTabId = await findFixtureTabId(harness, fixtureBaseUrl);
-    const scan = await extensionSend<{
-      results?: Array<{
-        imageId?: string;
-        label?: string;
-        skip_reason?: string | null;
-        type?: string;
-      }>;
-    }>(harness, {
-      type: 'SCAN_TAB',
-      tabId: fixtureTabId,
-      scanId: `skip-small-${Date.now()}`,
+    await page.close();
+  });
+
+  test('AC-ERR: MODEL_MISSING / skip shows unavailable, not Real', async ({
+    context,
+    harness,
+    fixtureBaseUrl,
+  }) => {
+    // Clear artifacts so ANALYZE fails closed (no model).
+    await extensionSend(harness, { type: 'CLEAR_ARTIFACTS' });
+
+    const page = await context.newPage();
+    await page.goto(`${fixtureBaseUrl}/mixed.html`, {
+      waitUntil: 'domcontentloaded',
     });
-    const tinyResult = (scan.results ?? []).find(
-      (r) =>
-        r.imageId === 'tiny-skip-small' ||
-        (typeof r.imageId === 'string' && r.imageId.includes('tiny')),
-    );
-    // Prefer the data-image-id hit; if the scan uses src as id, match skip_small any.
-    const skips = (scan.results ?? []).filter(
-      (r) => r.skip_reason === 'skip_small' || r.label === 'skip',
-    );
-    if (tinyResult) {
-      expect(tinyResult.label).toBe('skip');
-      expect(tinyResult.skip_reason).toBe('skip_small');
-      expect(tinyResult.label).not.toBe('real');
-    } else {
-      expect(skips.length).toBeGreaterThanOrEqual(1);
-      for (const s of skips) {
-        expect(s.label).not.toBe('real');
+    await waitImagesLoaded(page);
+
+    // Force a scan so badges settle to unavailable (or stay loading then error).
+    const tabId = await findFixtureTabId(harness, fixtureBaseUrl);
+    await extensionSend(harness, {
+      type: 'SCAN_TAB',
+      tabId,
+      scanId: `err-${Date.now()}`,
+    });
+
+    await expect
+      .poll(
+        async () => {
+          const details = await collectBadgeDetails(page);
+          return details.some(
+            (d) =>
+              d.text === 'unavailable' ||
+              d.state === 'unavailable' ||
+              d.text === '…',
+          );
+        },
+        { timeout: 60_000, message: 'waiting for unavailable/loading badges' },
+      )
+      .toBe(true);
+
+    const details = await collectBadgeDetails(page);
+    for (const d of details) {
+      // AC-ERR: never show bare "real" or coerce skip/error to real.
+      expect(d.text.toLowerCase()).not.toBe('real');
+      if (d.state === 'unavailable' || d.text === 'unavailable') {
+        expect(d.label).not.toBe('real');
+        expect(d.text).toBe('unavailable');
       }
     }
 

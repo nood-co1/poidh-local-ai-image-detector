@@ -1,13 +1,21 @@
 /**
- * Popup UI (section 2.2): Start / Retry setup, Ready + SHA display.
- * Talks to the service worker — never writes weights to chrome.storage.
+ * Popup UI (sections 2.2 + 3.2): Start / Retry setup, Ready + SHA display,
+ * pause scanning (chrome.storage.local), and A1 threshold rule from label.ts.
+ * Talks to the service worker for setup — never writes weights to chrome.storage.
  */
+
+import {
+  PAUSE_STORAGE_KEY,
+  thresholdRuleText,
+} from '../src/label.js';
 
 const statusEl = document.getElementById('status');
 const shaEl = document.getElementById('sha');
 const errorEl = document.getElementById('error');
 const startBtn = document.getElementById('start');
 const retryBtn = document.getElementById('retry');
+const pauseBtn = document.getElementById('pause');
+const thresholdEl = document.getElementById('threshold-rule');
 
 /**
  * @param {unknown} err
@@ -50,6 +58,46 @@ function renderStatus(status) {
   }
 }
 
+/**
+ * AC-A1: show rule derived from THRESHOLD via label.ts (never hardcode 65).
+ */
+function renderThresholdRule() {
+  if (thresholdEl) {
+    thresholdEl.textContent = thresholdRuleText();
+  }
+}
+
+/**
+ * @param {boolean} paused
+ */
+function renderPause(paused) {
+  if (!pauseBtn) return;
+  pauseBtn.hidden = false;
+  pauseBtn.disabled = false;
+  pauseBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
+  pauseBtn.textContent = paused ? 'Resume scanning' : 'Pause scanning';
+  pauseBtn.dataset.paused = paused ? '1' : '0';
+}
+
+/**
+ * @returns {Promise<boolean>}
+ */
+async function getPaused() {
+  try {
+    const stored = await chrome.storage.local.get(PAUSE_STORAGE_KEY);
+    return Boolean(stored[PAUSE_STORAGE_KEY]);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * @param {boolean} paused
+ */
+async function setPaused(paused) {
+  await chrome.storage.local.set({ [PAUSE_STORAGE_KEY]: paused });
+}
+
 function setBusy(busy) {
   if (startBtn) startBtn.disabled = busy;
   if (retryBtn) retryBtn.disabled = busy;
@@ -65,6 +113,11 @@ async function refreshStatus() {
   } catch (err) {
     renderStatus({ ready: false, error: errText(err) });
   }
+}
+
+async function refreshPause() {
+  const paused = await getPaused();
+  renderPause(paused);
 }
 
 /**
@@ -107,5 +160,28 @@ if (retryBtn) {
     void runSetup(true);
   });
 }
+if (pauseBtn) {
+  pauseBtn.addEventListener('click', () => {
+    void (async () => {
+      const next = !(await getPaused());
+      await setPaused(next);
+      renderPause(next);
+    })();
+  });
+}
 
+// Reflect external storage changes (e.g. after Chrome reload / other popup).
+try {
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'local') return;
+    const ch = changes[PAUSE_STORAGE_KEY];
+    if (!ch) return;
+    renderPause(Boolean(ch.newValue));
+  });
+} catch {
+  // non-extension context
+}
+
+renderThresholdRule();
 void refreshStatus();
+void refreshPause();

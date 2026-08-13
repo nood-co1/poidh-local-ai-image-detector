@@ -1,9 +1,9 @@
 import { defineConfig } from '@playwright/test';
 
 /**
- * Playwright config for claim e2e (sections 2.3 offline + 3.1 autoscan).
- * Claim-critical suite: retries 0 (E9). Never mock ONNX.
- * Suites: e2e/offline.spec.ts, e2e/autoscan-*.spec.ts (see scripts/gate-full.d/).
+ * Playwright config for claim e2e (2.3 offline, 3.1 autoscan, 3.2 threshold/pause).
+ * Claim-critical suite: retries 0 (E9). Never mock ONNX for live-scan paths.
+ * Suites selected by scripts/gate-full.d/* (offline vs autoscan+threshold).
  */
 export default defineConfig({
   testDir: './e2e',
