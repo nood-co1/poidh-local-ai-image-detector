@@ -37,3 +37,7 @@ Thumbs.db
 *.swo
 .idea/
 .vscode/
+
+# Local tooling venvs
+.venv*
+

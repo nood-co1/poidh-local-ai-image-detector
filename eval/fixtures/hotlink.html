@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>POIDH eval fixture — cross-origin hotlink</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 1.5rem;
+        background: #111;
+        color: #eee;
+      }
+      h1 {
+        font-size: 1.1rem;
+      }
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      figure {
+        margin: 0;
+        padding: 8px;
+        background: #222;
+        border-radius: 6px;
+      }
+      img {
+        display: block;
+        max-width: 200px;
+        height: auto;
+      }
+      figcaption {
+        font-size: 0.75rem;
+        margin-top: 4px;
+        color: #aaa;
+        word-break: break-all;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cross-origin hotlinked images</h1>
+    <p>
+      These <code>&lt;img&gt;</code> tags point at public HTTPS URLs (or a local
+      fixture server on another origin). They exercise cross-origin scan paths.
+      Do <strong>not</strong> use Hugging Face image URLs here (privacy HAR).
+    </p>
+    <div class="grid">
+      <!--
+        Public HTTPS stills with stable hosts. Listed for e2e cross-origin only;
+        not part of the frozen proxy admission set (see eval/proxy/manifest.json).
+      -->
+      <figure>
+        <img
+          src="https://images.cocodataset.org/val2017/000000000139.jpg"
+          alt="cross-origin COCO sample"
+          crossorigin="anonymous"
+          width="200"
+        />
+        <figcaption data-origin="cross">
+          https://images.cocodataset.org/val2017/000000000139.jpg
+        </figcaption>
+      </figure>
+      <figure>
+        <img
+          src="https://images.cocodataset.org/val2017/000000000285.jpg"
+          alt="cross-origin COCO sample 2"
+          crossorigin="anonymous"
+          width="200"
+        />
+        <figcaption data-origin="cross">
+          https://images.cocodataset.org/val2017/000000000285.jpg
+        </figcaption>
+      </figure>
+      <!-- Local fixture server pattern (alternate origin when served on :8765) -->
+      <figure>
+        <img
+          src="http://127.0.0.1:8765/assets/real_a.png"
+          alt="fixture server same assets other origin"
+          width="64"
+          height="48"
+        />
+        <figcaption data-origin="cross-local">
+          http://127.0.0.1:8765/assets/real_a.png (start a static server on 8765
+          for local e2e)
+        </figcaption>
+      </figure>
+    </div>
+  </body>
+</html>
