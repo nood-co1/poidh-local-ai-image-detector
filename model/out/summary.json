@@ -1,0 +1,13 @@
+{
+  "section": "4.1",
+  "at": "2026-08-13T18:10:10Z",
+  "calib": "calib_v1",
+  "H1": "CONFIRMED",
+  "H2": "PROPOSED",
+  "H3": "PROPOSED",
+  "H4": "PROPOSED",
+  "H5": "PROPOSED",
+  "gpu": false,
+  "export": "model/out/export.json",
+  "notes": "H3/H4 PROPOSED: NPR fusion and frequency-only negative control were not run (match model/H1-H5.md)."
+}

@@ -3,7 +3,7 @@
   "repo": "buildborderless/CommunityForensics-DeepfakeDet-ViT",
   "revision": "ac6ee457bea904a373065754107451793b56db00",
   "minProductionOnnxBytes": 20971520,
-  "notes": "Pinned post-2026-07-22 CF ViT-S export: num_labels=1, num_attention_heads=6. Production accuracy artifact is fp32 onnx/model.onnx only (not INT8/Q4).",
+  "notes": "Pinned post-2026-07-22 CF ViT-S export: num_labels=1, num_attention_heads=6. Production accuracy artifact is fp32 onnx/model.onnx only (not INT8/Q4). Section 4.1 calibrated exports live under calibratedExports only — not required by ensureArtifacts/setup.",
   "artifacts": [
     {
       "id": "onnx/model.onnx",
@@ -60,6 +60,26 @@
       "packagePath": "wasm/ort-wasm-simd-threaded.jsep.mjs",
       "sha256": "3ee381d20a80f51a788a1c4a5872f6f1d047538dd4342f4af00062de5f9ea4c6",
       "bytes": 46614
+    }
+  ],
+  "calibratedExports": [
+    {
+      "id": "onnx/model-calib-4.1-fp32.onnx",
+      "role": "calibrated",
+      "kind": "onnx",
+      "sha256": "65b67edcd2c8c79b1bc18b344056573c5c777a6158b15192838fb58af501155c",
+      "bytes": 87442240,
+      "path": "weights/onnx/model-calib-4.1-fp32.onnx",
+      "notes": "section 4.1 fp32 calibrated ViT-S (opset 17). SHA pin only — not downloaded by 2.2 ensureArtifacts/setup."
+    },
+    {
+      "id": "onnx/model-calib-4.1-fp16.onnx",
+      "role": "calibrated",
+      "kind": "onnx",
+      "sha256": "5bd414675505827aa9c79ade1ab8e5e662a3e63e312878387a05a21135f8314f",
+      "bytes": 43894052,
+      "path": "weights/onnx/model-calib-4.1-fp16.onnx",
+      "notes": "section 4.1 fp16 calibrated ViT-S (opset 17). SHA pin only — not downloaded by 2.2 ensureArtifacts/setup."
     }
   ]
 }

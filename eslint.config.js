@@ -13,6 +13,9 @@ export default tseslint.config(
       'node_modules/**',
       'evidence/**',
       '.pipeline/**',
+      '.venv*/**',
+      '.venv-model/**',
+      '.venv-proxy/**',
       'package-lock.json',
       // Built/copied static stubs and test-only debug companion.
       'extension/offscreen.js',

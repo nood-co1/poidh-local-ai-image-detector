@@ -1,0 +1,11 @@
+# Section 4.1 train/export (optional GPU for fine-tune)
+numpy>=1.26
+pillow>=10.0
+onnx>=1.15
+onnxruntime>=1.17
+scikit-learn>=1.3
+tqdm>=4.66
+onnxconverter-common>=1.14.0
+# Fine-tune + torch export path (install CUDA build on GPU hosts):
+# torch
+# transformers>=5.4.0

@@ -41,6 +41,11 @@ Thumbs.db
 # Local tooling venvs
 .venv*
 
+# Python bytecode / caches (train/export)
+__pycache__/
+*.py[cod]
+model/out/*.tmp
+
 # Playwright / e2e runtime
 test-results/
 playwright-report/
@@ -48,3 +53,5 @@ blob-report/
 evidence/.pw-profile-*/
 evidence/.cache/
 
+# 4.1 calibrated ONNX blobs live on the box; SHA pins are in weights/manifest.json calibratedExports
+weights/onnx/*.onnx

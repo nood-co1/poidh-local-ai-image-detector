@@ -1,0 +1,467 @@
+{
+  "name": "calib_v1",
+  "created_at": "2026-08-13T18:09:48Z",
+  "seed": 41,
+  "n": 76,
+  "n_ai": 38,
+  "n_real": 38,
+  "note": "Named calib for H1 only. Disjoint by sha256 from eval/proxy and goldens. Never used as soul-7 certificate. Do not peek proxy BA here.",
+  "rows": [
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_37_0_test.png",
+      "sha256": "029641aa8795be11088e7ddd6cd5521e52a8919d3c6126b7ae43b873628eea92",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_39_0_test.png",
+      "sha256": "0482669a95fe3751ebafbc0bd56d34a0a6431b1e9a5e874372449fe0fdb99495",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_38_0_test.png",
+      "sha256": "0547b5328cfe83e2648d8b22de7b6bf48938485b576a51a8730b7df2a9704ff2",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_36_0_test.png",
+      "sha256": "08522e3d075a3123e4de4927e11b5d4ad3ff78895c9e2aff91e84aef60d45d72",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-420.jpg",
+      "sha256": "1249231902aacf55c014ea2ba01718049cb3cb2353d5db5bce6fd078cf69f705",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-426.jpg",
+      "sha256": "171083685aa6edf756d334143895b7098cd850707139e38a5ba05be6b5a89f6d",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-481.jpg",
+      "sha256": "1794c6ffbe679e36706cf5c6ba5e6196a7caa8f077fea3c8d284be60b502f3d6",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-518.jpg",
+      "sha256": "2456f822e93b188ad5466037eb5aadf0589847b4704f5d0a571764335a3c8762",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_28_0_test.png",
+      "sha256": "24acc8ec2bb6154f7097409c39b2c1ef1fe47b9456a826b03df4437888a3e54d",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-421.jpg",
+      "sha256": "2a03753a0cb60e6def2a0a267af8f193dca17b0621be7b3e393023232d44e637",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-516.jpg",
+      "sha256": "2caf9d6ac0ef5f0b81acf1096fbde7f0fd771b6dbdc4ed7d20863689f4b2e654",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-498.jpg",
+      "sha256": "2d4822a924ed766f43ed445d94df77839102bea75d770b54c3f7141babf86409",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_29_0_test.png",
+      "sha256": "2ed0385495e066bc91e517e46a071053cb9f9af35ee3f84780ac7c8383a519c6",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_38_0_test.png",
+      "sha256": "2fe075c139ebe610302148ee201088ea3afc95f345f4f8629df8c4bd7f740bc0",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_35_0_test.png",
+      "sha256": "32c2afe57a8f19d09c7053757e2a5b3ca562ac658777871e3150bc5dd00f9617",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-519.jpg",
+      "sha256": "32f5b6fe4e95ab57ecd3db1a8bfe6add4cdb80525f97c4cc90e6548dbff59416",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_30_0_test.png",
+      "sha256": "33ae1d336870216acadf09c3ea40fccffe205357272a537489f655a37385a4e7",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_35_0_test.png",
+      "sha256": "3b3e39e03b119fc71c75ccd7772b7f9a3d31b7e211ca1afb9e90025f8392327f",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_32_0_test.png",
+      "sha256": "3f8f97f4c23367761094a9e01b56402ad9569ea3e5c76b887ab85ae136b91711",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-505.jpg",
+      "sha256": "45a57e60546212e809da4baec745f272c3a1d4d6a4a8f87357361a003f1e8bcf",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_37_0_test.png",
+      "sha256": "49d558f91d8d44e7d4683b259a887d818d50a615bad3ee519332402aa321fd27",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_39_0_test.png",
+      "sha256": "538904b3e8e7f0b0c2fd998bafc7c230ad773a470e3edbe63fa4e10adc21410e",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-427.jpg",
+      "sha256": "5d329f726c739ed2ffc63812fe92fc1ed4b6e7525988788640b4c535cdff237a",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-491.jpg",
+      "sha256": "6019ecf5523ca539f56378eb612a47dc5118ff99b8cab2a0878fa1211eccb8a1",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_33_0_test.png",
+      "sha256": "60b4fc8cd04d9dd7c46adfb961552e756fb4c1743a0b33cb9b52848fab3649b3",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-460.jpg",
+      "sha256": "610c118d4d42a82193959ed04941302e1f73788fd511e8c0a1eadc099016c4f3",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-432.jpg",
+      "sha256": "6a266a827874599351176bd7f6209aba1a1e33223336ca267ae8f7b7b85d3706",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_29_0_test.png",
+      "sha256": "6d6d4098a6cc75d21f93cb758c02631792ddfbb32197d9daca29113d622834fe",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_34_0_test.png",
+      "sha256": "6dfe76160fc413c10af08165080bf2657f8ecd390a1ddbc918d6cf80a578b0e0",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_37_0_test.png",
+      "sha256": "730b72e89eb4990cb81122ace1ef319dd5eda4849a581173586e06ef7d4104c0",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-471.jpg",
+      "sha256": "7418534c894fd994b18bbce6b7ee76887ba8bcd3fccff24310c2a44af3fdb30b",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-478.jpg",
+      "sha256": "7657ed93b963d320a4b03968cffdf644b60db9c5507cbc6b3bc84c4b736ac5bd",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_32_0_test.png",
+      "sha256": "8008dbeb7623f5c9c82efa9a7490a2de801746958c1c2805af5c6722f56ca645",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_36_0_test.png",
+      "sha256": "81fa7bb8808c5c6e83b3b14d577f3ff25f3c26f53b93e736ca1c7e7e18ff49e1",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-476.jpg",
+      "sha256": "8326be0de4a276ea2048c183ef7e98baa19472f48cfa22a90374b05998dc8fc0",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_31_0_test.png",
+      "sha256": "87868ac78fa0865bd93fe322fd65b51ba182bc99a921118ff1a2c3d0f277bab0",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_30_0_test.png",
+      "sha256": "87dc9b04acd8516713baaff0a784b76ef48ba6ffe8dadda438ff436dcd5fdbce",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-440.jpg",
+      "sha256": "8854d4831dcf88fda31c73e9222e747ec219f1890d67cb6509bb67083b0793cc",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-400.jpg",
+      "sha256": "8a09216e5dea78614e17a9d5bde5968c63100cc9010f27f8e4d7dacd1c23b13b",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-469.jpg",
+      "sha256": "8a65c8da34bd11c48444ca50fb9e5681d532f62c1480fd82de5862e0e4d6ca3c",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-493.jpg",
+      "sha256": "8c26aa2832285b08abdd7dfdf93b2d84bfa150396d8738fa5df7df2396f7dd36",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_28_0_test.png",
+      "sha256": "9027490ef224eb56514b0cc0e6a62adc262830cc76da97eaaa8886fed5c972c7",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_36_0_test.png",
+      "sha256": "96139245fe2a87157deb430cc3d8ae0222644d6b983282acaa5ae986a3cb0c5a",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/ai/pollinations-flux/flux-004.jpg",
+      "sha256": "9783706b21e640f368f19b9f9d5077f76dec96aa129d96905bfd57592818e621",
+      "label": "ai",
+      "family": "pollinations-flux"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/ai/pollinations-turbo/turbo-004.jpg",
+      "sha256": "9783706b21e640f368f19b9f9d5077f76dec96aa129d96905bfd57592818e621",
+      "label": "ai",
+      "family": "pollinations-turbo"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-512.jpg",
+      "sha256": "983470bc2e8c26dc4729f3f43ad23338bc75f15aad3b274fb410143e2648d9e7",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_35_0_test.png",
+      "sha256": "9db6a82f5dc75b298c327beb5d64f4d919545bb146386fad71e6703ae1dcbfbc",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-486.jpg",
+      "sha256": "9e33d48a10dc7a2527532070e243975723e025c2fad48f647bca59e5ccfce5de",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_39_0_test.png",
+      "sha256": "a43b91c66a1c13fd17300a505c1613cda479c0a793677553d009363e1ff65439",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-487.jpg",
+      "sha256": "a775241e23e0ff44f6dda0ea655771b8eacdfdc09ed6a59031a3e727301a5662",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-506.jpg",
+      "sha256": "b1d799c798580064bd54e59433fec41f29dd007c933d420264fbbbf401df2360",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-423.jpg",
+      "sha256": "b1f0ab16ddd01a290d0ef418bcf6a019cb15e25f273960a10c610378179c873e",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-447.jpg",
+      "sha256": "b7b703f8eddd9fb4503201d3bc2886ea8b3b679ce403fe0eca6ca37ce21822ec",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-439.jpg",
+      "sha256": "bc32240ed12ccb9a7b37b8ad18289ddd0dee4fe69c0777ab83f41c98088cb197",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_33_0_test.png",
+      "sha256": "c26943b4bfbad092f96ff53f73247abb5aa7a7dd2dcd3e2c5fdc812510262a1c",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-517.jpg",
+      "sha256": "c3815ae46332a77de31f0b229ef7df26f26815a8bdac2c7f86b6b3f92548ab6e",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_34_0_test.png",
+      "sha256": "c77bae9bc4f36afbf38afcb5ea26471d08bed4caf736c18916fcd2fcb9c1fc0d",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_32_0_test.png",
+      "sha256": "c8c9d84f554760e870d654b840f04f6b03855e0ff1354eee1f745d2e37b231f6",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-482.jpg",
+      "sha256": "ca5ee2c1e1d49b61c32b36cba45f7cde1b964ebc900bce7ea02aab54d3372dfb",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-494.jpg",
+      "sha256": "ced2462ad362d9a35a7c6003c0233b00def47baa6b52b946dbe47d7c6f9cacf2",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_31_0_test.png",
+      "sha256": "d306f60aa439e7363122088a826b27b3c11d7b91fa93d9089724bc222ba56380",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-442.jpg",
+      "sha256": "d6c1eb4047f310847325897de8455f9917e39265f8da6df3ef53c77cefc300e2",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-466.jpg",
+      "sha256": "d777422516b32d60818f73702eec83a9476280aa3e964f8b6600646d07b98914",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-404.jpg",
+      "sha256": "d87ee13608af83a8b2c9245500eabfc2fa1f170dae3bbe3d1fdde0855d9b1a82",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-507.jpg",
+      "sha256": "d8c0466708a26171cd2a268191ab36fe1f0339abaaf62095cb41a5b629178e54",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-510.jpg",
+      "sha256": "df2d5b3dadd3fd2e5cb060c3c051fc7d51213c1567004bb49d79ae449c785b47",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_31_0_test.png",
+      "sha256": "df43d63c77394defe827d6e63fb50ad5db175f11a52dbd1902367a8feb91a0a0",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_30_0_test.png",
+      "sha256": "e1010c10ab0e11ed173077a570bb7d4000f79ae095b17a2f9a04e2faf143b28d",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-434.jpg",
+      "sha256": "e38c25d7e4e10e012ec1817d48366239e9582e0979aa3ec47fc78342186e6895",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_33_0_test.png",
+      "sha256": "e42f3a2efedc330d7feb1bec32416ae48f30dde796648d13e94dd97dbe9e057c",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-484.jpg",
+      "sha256": "e781f3ec36da51f8c5141c046af11990d73c896131c81dd2c46a23f9d034e9c4",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/pixart_alpha_34_0_test.png",
+      "sha256": "eceaef30820b8ef3df76d5c1f3173b904a361fa95220ca376ec5dcdb42a41e8b",
+      "label": "ai",
+      "family": "dragon-pixart"
+    },
+    {
+      "path": "/data/poidh-legal-proxy-staging/images/real/picsum/picsum-433.jpg",
+      "sha256": "ef4208094af6c7979c6160756d56d1a211bbe4cf1ae1a740cf55c23beb561d4a",
+      "label": "real",
+      "family": "picsum"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_38_0_test.png",
+      "sha256": "f7b44c99033b2befbb1d078e31732a9dd4c2156e93df595bb5f0ca038b356ed5",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/flux_1_28_0_test.png",
+      "sha256": "fc73a8e75781b7b0263bcd9f4bdf6d426faa3631d0eb48b07ca00bcfba340969",
+      "label": "ai",
+      "family": "dragon-flux"
+    },
+    {
+      "path": "/mnt/HC_Volume_105994188/poidh-cache/dragon_extract/sdxl_29_0_test.png",
+      "sha256": "ffd01d8ccfae51d54fc36967f7f80f65a2e54e7e8b869972077bfe228862b8d1",
+      "label": "ai",
+      "family": "dragon-sdxl"
+    }
+  ]
+}

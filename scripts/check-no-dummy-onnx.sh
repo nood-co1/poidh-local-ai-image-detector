@@ -93,7 +93,16 @@ while IFS= read -r -d '' f; do
         ;;
     esac
   fi
-done < <(find "${ROOT}" \( -path "${ROOT}/node_modules" -o -path "${ROOT}/.git" -o -path "${ROOT}/dist" -o -path "${ROOT}/.venv-proxy" \) -prune -o -type f -name "*.onnx" -print0 2>/dev/null)
+# Prune deps/venvs (local train venvs may ship tiny ORT/onnx test graphs).
+done < <(find "${ROOT}" \( \
+  -path "${ROOT}/node_modules" -o \
+  -path "${ROOT}/.git" -o \
+  -path "${ROOT}/dist" -o \
+  -path "${ROOT}/.venv-proxy" -o \
+  -path "${ROOT}/.venv-model" -o \
+  -path "${ROOT}/.venv" -o \
+  -name ".venv*" \
+\) -prune -o -type f -name "*.onnx" -print0 2>/dev/null)
 
 if [[ "${status}" -ne 0 ]]; then
   echo "check-no-dummy-onnx: FAIL" >&2

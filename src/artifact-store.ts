@@ -55,13 +55,36 @@ export interface ManifestArtifact {
   assert?: ArtifactAssert;
 }
 
+/**
+ * Optional SHA pins for section 4.1 calibrated exports.
+ * Recorded for audit/repro only — **not** iterated by ensureArtifacts / setup.
+ */
+export interface CalibratedExportPin {
+  id: string;
+  role?: string;
+  kind?: string;
+  sha256: string;
+  bytes?: number;
+  path?: string;
+  notes?: string;
+}
+
 export interface Manifest {
   version: number;
   repo: string;
   revision: string;
   minProductionOnnxBytes: number;
   notes?: string;
+  /**
+   * Runtime pins only (production ONNX, config, ORT wasm).
+   * ensureArtifacts / getArtifactStatus / clearArtifacts iterate this array.
+   */
   artifacts: ManifestArtifact[];
+  /**
+   * Section 4.1 calibrated ONNX SHA pins. Side field — never required for
+   * models_ready. Do not add these to `artifacts` without a weight-host URL.
+   */
+  calibratedExports?: CalibratedExportPin[];
 }
 
 export interface ArtifactStatus {
