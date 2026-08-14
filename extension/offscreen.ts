@@ -26,6 +26,7 @@ import {
 const WASM_DIR = 'wasm/';
 const TARGET = 'offscreen' as const;
 let artifactStoreLoad: Promise<boolean> | null = null;
+let lastOrtError: string | null = null;
 
 /** Optional field so SW and content messages do not loop. */
 interface TargetedMessage {
@@ -52,10 +53,13 @@ async function announceSessionReady(): Promise<void> {
  */
 async function reportOrtError(err: unknown): Promise<void> {
   const detail = err instanceof Error ? err.message : String(err);
+  lastOrtError = detail;
   try {
-    await chrome.storage.local.set({ lastOrtError: detail });
+    // Offscreen documents only expose chrome.runtime. Ask the worker to persist
+    // the detail so the popup can still show it after this document closes.
+    await chrome.runtime.sendMessage({ type: 'SESSION_ERROR', error: detail });
   } catch {
-    /* ignore */
+    // SESSION_STATUS below still exposes the in-memory detail.
   }
 }
 
@@ -98,11 +102,7 @@ async function loadFromArtifactStore(): Promise<boolean> {
     await reportOrtError(err);
     throw err;
   }
-  try {
-    await chrome.storage.local.remove('lastOrtError');
-  } catch {
-    /* ignore */
-  }
+  lastOrtError = null;
   void announceSessionReady();
   return true;
 }
@@ -156,22 +156,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   if (msg.type === 'SESSION_STATUS') {
     const ready = isSessionReady();
-    void chrome.storage.local
-      .get('lastOrtError')
-      .then((stored) => {
-        sendResponse({
-          type: 'SESSION_STATUS_RESULT',
-          ready,
-          error:
-            !ready && typeof stored.lastOrtError === 'string'
-              ? stored.lastOrtError
-              : undefined,
-        });
-      })
-      .catch(() => {
-        sendResponse({ type: 'SESSION_STATUS_RESULT', ready });
-      });
-    return true;
+    sendResponse({
+      type: 'SESSION_STATUS_RESULT',
+      ready,
+      error: !ready && lastOrtError ? lastOrtError : undefined,
+    });
+    return false;
   }
 
   if (msg.type === 'LOAD_FROM_STORE') {

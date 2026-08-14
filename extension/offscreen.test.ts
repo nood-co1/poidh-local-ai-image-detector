@@ -73,9 +73,13 @@ describe('offscreen MV3 wiring', () => {
     expect(worker).toMatch(/SESSION_READY/);
     expect(worker).toMatch(/MODELS_READY/);
     expect(worker).toMatch(/chrome\.tabs\.sendMessage/);
+    expect(worker).toMatch(/onActivated/);
     expect(content).toMatch(/MODELS_READY/);
     expect(content).toMatch(/settled\.delete/);
     expect(content).toMatch(/processImage/);
+    expect(content).toMatch(/removeOrphanBadgeHosts/);
+    expect(content).toMatch(/visibilitychange/);
+    expect(content).toMatch(/SESSION_STATUS/);
   });
 
   it('deduplicates ORT loads and exposes session failures to the popup', () => {
@@ -87,6 +91,11 @@ describe('offscreen MV3 wiring', () => {
     expect(offscreen).toMatch(/artifactStoreLoad/);
     expect(offscreen).toMatch(/ensureLoadFromArtifactStore/);
     expect(offscreen).toMatch(/lastOrtError/);
+    expect(offscreen).not.toMatch(/chrome\.storage/);
+    expect(offscreen).toMatch(/SESSION_ERROR/);
+    expect(
+      readFileSync(join(root, 'extension/service_worker.ts'), 'utf8'),
+    ).toMatch(/SESSION_ERROR/);
     expect(popup).toMatch(/SESSION_STATUS/);
     expect(popup).toMatch(/Loading model/);
     expect(content).toMatch(/response\.error/);

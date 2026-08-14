@@ -21,6 +21,7 @@ import {
   BADGE_TESTID,
   MIN_ELIGIBLE_CSS_PX,
   cssSize,
+  removeOrphanBadgeHosts,
 } from './badge.js';
 import {
   formatBadgeText,
@@ -731,11 +732,59 @@ function observeImages(): void {
   window.addEventListener('resize', repositionAll, { passive: true });
 }
 
+function rescanAllImages(): void {
+  const imgs = Array.from(document.images);
+  for (const img of imgs) {
+    settled.delete(img);
+    modelMissRetries.delete(img);
+  }
+  for (let i = 0; i < imgs.length; i++) {
+    void processImage(imgs[i]!, i);
+  }
+}
+
+async function sessionIsReady(): Promise<boolean> {
+  try {
+    const status = (await chrome.runtime.sendMessage({
+      type: 'SESSION_STATUS',
+    })) as { ready?: boolean } | undefined;
+    return Boolean(status?.ready);
+  } catch {
+    return false;
+  }
+}
+
+/** If the model was not ready at first paint, rescan once it is. */
+async function waitForSessionThenRescan(): Promise<void> {
+  if (await sessionIsReady()) return;
+  const t0 = Date.now();
+  while (Date.now() - t0 < 180_000) {
+    await new Promise((r) => setTimeout(r, 800));
+    if (await sessionIsReady()) {
+      rescanAllImages();
+      return;
+    }
+  }
+}
+
+async function rescanIfSessionReady(): Promise<void> {
+  if (await sessionIsReady()) {
+    rescanAllImages();
+  }
+}
+
 // Boot autoscan (AC-AUTO: no click required). Load pause flag first (AC-PAUSE).
 if (typeof document !== 'undefined') {
   const boot = (): void => {
     watchPauseFlag();
-    void loadPauseFlag().then(() => observeImages());
+    removeOrphanBadgeHosts();
+    void loadPauseFlag().then(() => {
+      observeImages();
+      void waitForSessionThenRescan();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) void rescanIfSessionReady();
+    });
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot, { once: true });
@@ -751,14 +800,8 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   const msg = message as { type?: string; scanId?: string };
 
   if (msg.type === 'MODELS_READY') {
-    for (const img of Array.from(document.images)) {
-      settled.delete(img);
-      modelMissRetries.delete(img);
-    }
-    const imgs = Array.from(document.images);
-    for (let i = 0; i < imgs.length; i++) {
-      void processImage(imgs[i]!, i);
-    }
+    removeOrphanBadgeHosts();
+    rescanAllImages();
     sendResponse({ ok: true, type: 'MODELS_READY_ACK' });
     return false;
   }

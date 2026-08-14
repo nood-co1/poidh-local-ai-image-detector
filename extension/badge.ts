@@ -33,7 +33,27 @@ export interface BadgeHandle {
   reposition(): void;
 }
 
-const HOST_ATTR = 'data-aidet-badge-host';
+export const HOST_ATTR = 'data-aidet-badge-host';
+
+/**
+ * Drop leftover hosts from a previous content-script instance (extension
+ * reload). Those nodes keep showing "unavailable" and have no live __aidetImg.
+ */
+export function removeOrphanBadgeHosts(): number {
+  if (typeof document === 'undefined') return 0;
+  let removed = 0;
+  for (const host of Array.from(
+    document.querySelectorAll<HTMLElement>(`[${HOST_ATTR}]`),
+  )) {
+    const img = (host as HTMLElement & { __aidetImg?: HTMLImageElement })
+      .__aidetImg;
+    if (!img || !img.isConnected) {
+      host.remove();
+      removed += 1;
+    }
+  }
+  return removed;
+}
 
 /**
  * Create (or reuse) a positioned shadow-DOM badge over `img`.

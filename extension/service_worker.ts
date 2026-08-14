@@ -119,6 +119,27 @@ async function broadcastModelsReady(): Promise<void> {
   );
 }
 
+async function notifyTabModelsReady(tabId: number): Promise<void> {
+  try {
+    const status = await sendToOffscreen<{ ready?: boolean }>({
+      type: 'SESSION_STATUS',
+    });
+    if (!status?.ready) return;
+    await chrome.tabs.sendMessage(tabId, { type: 'MODELS_READY' });
+  } catch {
+    /* offscreen booting or tab has no content script */
+  }
+}
+
+// Extension reload can inject content scripts after SESSION_READY already fired.
+void waitOffscreenSessionReady(180_000).then((ready) => {
+  if (ready) void broadcastModelsReady();
+});
+
+chrome.tabs.onActivated.addListener((info) => {
+  void notifyTabModelsReady(info.tabId);
+});
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message === null || typeof message !== 'object') {
     return false;
@@ -135,7 +156,18 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (msg.type === 'SESSION_READY') {
     // Offscreen can finish loading after the content script's bounded
     // MODEL_MISSING retries. Wake every injected page exactly when usable.
-    void broadcastModelsReady();
+    void chrome.storage.local
+      .remove('lastOrtError')
+      .catch(() => undefined)
+      .then(() => broadcastModelsReady());
+    return false;
+  }
+
+  if (msg.type === 'SESSION_ERROR') {
+    const detail = (message as { error?: unknown }).error;
+    if (typeof detail === 'string' && detail) {
+      void chrome.storage.local.set({ lastOrtError: detail });
+    }
     return false;
   }
 
