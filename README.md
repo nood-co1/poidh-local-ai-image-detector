@@ -2,7 +2,7 @@
 
 MIT-licensed Chrome **Manifest V3** extension that scores already-displayed page images **on-device** (AI vs Real at threshold `0.65`) after a one-time public-weight download.
 
-**Public repository:** https://github.com/nood-co1/poidh-local-ai-image-detector
+**Public repository:** https://github.com/blockbrain-ai/poidh-local-ai-image-detector
 
 Package name: `poidh-local-ai-image-detector`. Maintainer build and install docs: [docs/BUILD.md](./docs/BUILD.md), [docs/INSTALL.md](./docs/INSTALL.md).
 

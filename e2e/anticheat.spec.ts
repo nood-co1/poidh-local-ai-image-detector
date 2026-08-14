@@ -42,7 +42,7 @@ const LICENSE_PATH = join(ROOT, 'LICENSE');
 const INSTALL_MD = join(ROOT, 'docs', 'INSTALL.md');
 const BUILD_MD = join(ROOT, 'docs', 'BUILD.md');
 const README_PATH = join(ROOT, 'README.md');
-const PUBLIC_REMOTE = 'https://github.com/nood-co1/poidh-local-ai-image-detector';
+const PUBLIC_REMOTE = 'https://github.com/blockbrain-ai/poidh-local-ai-image-detector';
 
 type ExtensionFixtures = {
   context: BrowserContext;

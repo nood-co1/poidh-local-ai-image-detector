@@ -50,6 +50,6 @@ All gates are one-shot and non-interactive (no watch mode).
 
 ## Public repository
 
-https://github.com/nood-co1/poidh-local-ai-image-detector
+https://github.com/blockbrain-ai/poidh-local-ai-image-detector
 
 See [INSTALL.md](./INSTALL.md) for loading the built package in Chrome.

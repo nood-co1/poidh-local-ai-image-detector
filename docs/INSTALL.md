@@ -57,6 +57,6 @@ Fix the path or manifest and use **Reload** on `chrome://extensions`.
 
 ## Public repository
 
-https://github.com/nood-co1/poidh-local-ai-image-detector
+https://github.com/blockbrain-ai/poidh-local-ai-image-detector
 
 MIT licensed — see [LICENSE](../LICENSE). Compile details: [BUILD.md](./BUILD.md).
