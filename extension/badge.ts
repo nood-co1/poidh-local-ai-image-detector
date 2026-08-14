@@ -63,7 +63,7 @@ export function attachBadge(img: HTMLImageElement): BadgeHandle {
     :host { all: initial; }
     .badge {
       display: inline-block;
-      font: 600 11px/1.2 system-ui, -apple-system, sans-serif;
+      font: 800 12px/1.2 system-ui, -apple-system, sans-serif;
       color: #0b0b0b;
       background: #f5e642;
       border: 1px solid #1a1a1a;
@@ -84,12 +84,12 @@ export function attachBadge(img: HTMLImageElement): BadgeHandle {
       color: #f2f2f2;
     }
     .badge[data-state="score"][data-label="ai"] {
-      background: #ff6b4a;
-      color: #111;
+      background: #ff2d2d;
+      color: #fff;
     }
     .badge[data-state="score"][data-label="real"] {
-      background: #7ddea2;
-      color: #111;
+      background: #1f9d55;
+      color: #fff;
     }
   `;
   const badge = document.createElement('div');
@@ -149,7 +149,13 @@ function makeHandle(
       // Never show "real" for skips/errors (R-SKIP-NOT-REAL).
       badge.textContent = 'unavailable';
       if (state.reason) {
-        badge.title = state.reason;
+        const hint =
+          state.reason === 'MODEL_MISSING'
+            ? 'Model not loaded — open the extension popup and click Start setup'
+            : state.reason === 'skip_cross_origin'
+              ? 'Could not read this image (cross-origin). Hover a same-origin photo or wait for setup.'
+              : state.reason;
+        badge.title = hint;
       }
       return;
     }

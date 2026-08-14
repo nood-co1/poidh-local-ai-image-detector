@@ -138,6 +138,27 @@ async function runSetup(force) {
       });
       return;
     }
+    if (statusEl) statusEl.textContent = 'Loading model…';
+    const t0 = Date.now();
+    let sessionReady = false;
+    while (Date.now() - t0 < 180_000) {
+      const session = await chrome.runtime.sendMessage({
+        type: 'SESSION_STATUS',
+      });
+      if (session && session.ready) {
+        sessionReady = true;
+        break;
+      }
+      await new Promise((r) => setTimeout(r, 400));
+    }
+    if (!sessionReady) {
+      renderStatus({
+        ready: false,
+        error:
+          'weights saved but the on-device session did not start — click Retry',
+      });
+      return;
+    }
     renderStatus({
       ready: true,
       sha256: result.sha256,

@@ -36,8 +36,8 @@ describe('thresholdRuleText', () => {
 
 describe('formatBadgeText (AC-NUM)', () => {
   it('includes numeric score and label', () => {
-    expect(formatBadgeText(0.64)).toBe('0.64 real');
-    expect(formatBadgeText(0.65)).toBe('0.65 ai');
-    expect(formatBadgeText(0.5, 'real')).toBe('0.50 real');
+    expect(formatBadgeText(0.64)).toBe('0.64 Real');
+    expect(formatBadgeText(0.65)).toBe('0.65 AI');
+    expect(formatBadgeText(0.5, 'real')).toBe('0.50 Real');
   });
 });

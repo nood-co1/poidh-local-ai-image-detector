@@ -527,7 +527,19 @@ async function resolveRgb(msg: AnalyzeImageMessage): Promise<RgbImage> {
 export async function decodeImageSrc(src: string): Promise<RgbImage> {
   let response: Response;
   try {
-    response = await fetch(src);
+    const ctrl = new AbortController();
+    const kill = setTimeout(() => ctrl.abort(), 8000);
+    try {
+      response = await fetch(src, {
+        method: 'GET',
+        credentials: 'omit',
+        cache: 'no-store',
+        signal: ctrl.signal,
+        headers: { Accept: 'image/*,*/*;q=0.8' },
+      });
+    } finally {
+      clearTimeout(kill);
+    }
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err);
     throw new DecodeError(`DECODE: fetch failed: ${detail}`);

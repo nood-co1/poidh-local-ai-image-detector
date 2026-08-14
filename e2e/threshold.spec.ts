@@ -352,8 +352,8 @@ test.describe('3.2 score and threshold (JOB-SCORE-01)', () => {
     expect(THRESHOLD).toBe(0.65);
     expect(labelFromScore(0.64)).toBe('real');
     expect(labelFromScore(0.65)).toBe('ai');
-    expect(formatBadgeText(0.64)).toBe('0.64 real');
-    expect(formatBadgeText(0.65)).toBe('0.65 ai');
+    expect(formatBadgeText(0.64)).toBe('0.64 Real');
+    expect(formatBadgeText(0.65)).toBe('0.65 AI');
     expect(thresholdRuleText()).toBe('AI if >= 65%');
   });
 
@@ -421,20 +421,20 @@ test.describe('3.2 score and threshold (JOB-SCORE-01)', () => {
     expect(r64.ok, r64.error).toBe(true);
     expect(r64.label).toBe('real');
     expect(r64.text).toBe(formatBadgeText(0.64));
-    expect(r64.text).toBe('0.64 real');
+    expect(r64.text).toBe('0.64 Real');
 
     const r65 = await inject(0.65, 1);
     expect(r65.ok, r65.error).toBe(true);
     expect(r65.label).toBe('ai');
     expect(r65.text).toBe(formatBadgeText(0.65));
-    expect(r65.text).toBe('0.65 ai');
+    expect(r65.text).toBe('0.65 AI');
 
     await expect
       .poll(
         async () => {
           const texts = await collectBadgeTexts(page);
           return (
-            texts.includes('0.64 real') && texts.includes('0.65 ai')
+            texts.includes('0.64 Real') && texts.includes('0.65 AI')
           );
         },
         { timeout: 10_000, message: 'injected score badges not visible' },
@@ -443,7 +443,7 @@ test.describe('3.2 score and threshold (JOB-SCORE-01)', () => {
 
     const details = await collectBadgeDetails(page);
     const texts = details.map((d) => d.text);
-    expect(texts).toEqual(expect.arrayContaining(['0.64 real', '0.65 ai']));
+    expect(texts).toEqual(expect.arrayContaining(['0.64 Real', '0.65 AI']));
 
     for (const d of details) {
       if (!isScoreLabelBadge(d.text)) continue;

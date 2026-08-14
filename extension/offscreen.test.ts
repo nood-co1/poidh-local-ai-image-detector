@@ -61,6 +61,23 @@ describe('offscreen MV3 wiring', () => {
     expect(src).toMatch(/from ['"]\.\/setup\.js['"]/);
   });
 
+  it('rescans pages when the offscreen model session becomes ready', () => {
+    const offscreen = readFileSync(join(root, 'extension/offscreen.ts'), 'utf8');
+    const worker = readFileSync(
+      join(root, 'extension/service_worker.ts'),
+      'utf8',
+    );
+    const content = readFileSync(join(root, 'extension/content.ts'), 'utf8');
+
+    expect(offscreen).toMatch(/SESSION_READY/);
+    expect(worker).toMatch(/SESSION_READY/);
+    expect(worker).toMatch(/MODELS_READY/);
+    expect(worker).toMatch(/chrome\.tabs\.sendMessage/);
+    expect(content).toMatch(/MODELS_READY/);
+    expect(content).toMatch(/settled\.delete/);
+    expect(content).toMatch(/processImage/);
+  });
+
   it('manifest registers content script for page pixel scan (2.3)', () => {
     const manifest = readFileSync(join(root, 'extension/manifest.json'), 'utf8');
     const json = JSON.parse(manifest) as {
@@ -119,4 +136,3 @@ describe('offscreen MV3 wiring', () => {
     expect(html).toMatch(/test only|not soul-3/i);
   });
 });
-

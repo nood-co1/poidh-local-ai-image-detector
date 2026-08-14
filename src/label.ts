@@ -43,5 +43,5 @@ export function formatBadgeText(
   const n = Number.isFinite(score) ? score : 0;
   const clamped = Math.min(1, Math.max(0, n));
   const lab = label ?? labelFromScore(clamped);
-  return `${clamped.toFixed(2)} ${lab}`;
+  return `${clamped.toFixed(2)} ${lab === 'ai' ? 'AI' : 'Real'}`;
 }

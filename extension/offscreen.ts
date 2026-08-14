@@ -37,6 +37,15 @@ function wasmBaseUrl(): string {
   return chrome.runtime.getURL(WASM_DIR);
 }
 
+/** Tell the service worker that pages which saw MODEL_MISSING can rescan. */
+async function announceSessionReady(): Promise<void> {
+  try {
+    await chrome.runtime.sendMessage({ type: 'SESSION_READY' });
+  } catch {
+    // The session remains usable even if the worker is between lifetimes.
+  }
+}
+
 /**
  * Load production ONNX (and wasm path map when available) from OPFS/Cache.
  * Does not contact the weight host.
@@ -66,6 +75,7 @@ async function loadFromArtifactStore(): Promise<boolean> {
   }
 
   await loadSession(modelBytes, wasmOption);
+  void announceSessionReady();
   return true;
 }
 

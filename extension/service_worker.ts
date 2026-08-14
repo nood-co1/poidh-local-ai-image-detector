@@ -75,12 +75,27 @@ async function sendToOffscreen<T = unknown>(
  * After successful setup, ask offscreen to load the model from the artifact store.
  */
 async function notifyOffscreenLoadFromStore(): Promise<void> {
+  await ensureOffscreenDocument();
+  await sendToOffscreen({ type: 'LOAD_FROM_STORE' });
+}
+
+async function broadcastModelsReady(): Promise<void> {
+  let tabs: chrome.tabs.Tab[];
   try {
-    await ensureOffscreenDocument();
-    await sendToOffscreen({ type: 'LOAD_FROM_STORE' });
+    tabs = await chrome.tabs.query({});
   } catch {
-    // Offscreen may not be ready yet; it will tryLoad on its own boot.
+    return;
   }
+  await Promise.all(
+    tabs.map(async (tab) => {
+      if (typeof tab.id !== 'number') return;
+      try {
+        await chrome.tabs.sendMessage(tab.id, { type: 'MODELS_READY' });
+      } catch {
+        /* tab has no content script */
+      }
+    }),
+  );
 }
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -93,6 +108,13 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   // Ignore messages addressed exclusively to the offscreen document so that
   // SW → offscreen sendMessage does not re-enter this router.
   if (msg.target === OFFSCREEN_TARGET) {
+    return false;
+  }
+
+  if (msg.type === 'SESSION_READY') {
+    // Offscreen can finish loading after the content script's bounded
+    // MODEL_MISSING retries. Wake every injected page exactly when usable.
+    void broadcastModelsReady();
     return false;
   }
 
@@ -143,7 +165,11 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     void runSetup(force)
       .then(async (result) => {
         if (result.ok) {
-          await notifyOffscreenLoadFromStore();
+          try {
+            await notifyOffscreenLoadFromStore();
+          } catch {
+            // Offscreen also loads from the artifact store on boot.
+          }
         }
         sendResponse(result);
       })

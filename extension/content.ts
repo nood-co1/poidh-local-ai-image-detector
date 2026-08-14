@@ -578,7 +578,7 @@ function markSettledFromResult(
       return;
     }
     if (result.skip_reason === 'skip_cross_origin') {
-      settled.add(img);
+      // Do not permanently settle — a later MODELS_READY / GET retry can score.
       return;
     }
   }
@@ -586,7 +586,7 @@ function markSettledFromResult(
 
 /** MODEL_MISSING autoscan retry budget per image (setup may complete later). */
 const modelMissRetries = new WeakMap<HTMLImageElement, number>();
-const MODEL_MISS_RETRY_MAX = 12;
+const MODEL_MISS_RETRY_MAX = 48;
 const MODEL_MISS_RETRY_MS = 2500;
 
 async function processImage(img: HTMLImageElement, index: number): Promise<void> {
@@ -633,11 +633,11 @@ async function processImage(img: HTMLImageElement, index: number): Promise<void>
     markSettledFromResult(img, result);
 
     // If models were not ready, retry later so setup → auto-rescore works.
-    if (
-      result.type === 'ANALYZE_ERROR' &&
-      result.code === 'MODEL_MISSING' &&
-      !settled.has(img)
-    ) {
+    const retryable =
+      (result.type === 'ANALYZE_ERROR' && result.code === 'MODEL_MISSING') ||
+      (result.type === 'ANALYZE_RESULT' &&
+        result.skip_reason === 'skip_cross_origin');
+    if (retryable && !settled.has(img)) {
       const n = modelMissRetries.get(img) ?? 0;
       if (n < MODEL_MISS_RETRY_MAX) {
         modelMissRetries.set(img, n + 1);
@@ -726,6 +726,19 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return false;
   }
   const msg = message as { type?: string; scanId?: string };
+
+  if (msg.type === 'MODELS_READY') {
+    for (const img of Array.from(document.images)) {
+      settled.delete(img);
+      modelMissRetries.delete(img);
+    }
+    const imgs = Array.from(document.images);
+    for (let i = 0; i < imgs.length; i++) {
+      void processImage(imgs[i]!, i);
+    }
+    sendResponse({ ok: true, type: 'MODELS_READY_ACK' });
+    return false;
+  }
 
   if (msg.type === 'SCAN_PAGE') {
     const scanId =
