@@ -127,6 +127,7 @@ describe('offscreen MV3 wiring', () => {
     expect(src).toMatch(/IntersectionObserver/);
     expect(src).toMatch(/skip_cross_origin/);
     expect(src).toMatch(/skip_small/);
+    expect(src).toMatch(/preferredImageSrc/);
   });
 
   it('resultCache must not short-circuit ANALYZE_IMAGE / SCAN_PAGE (AC-MISS)', () => {

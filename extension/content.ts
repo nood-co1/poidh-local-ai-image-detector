@@ -28,6 +28,7 @@ import {
   labelFromScore,
   PAUSE_STORAGE_KEY,
 } from '../src/label.js';
+import { preferredImageSrc } from '../src/image-url.js';
 
 export { BADGE_TESTID, MIN_ELIGIBLE_CSS_PX, isEligibleImage, cssSize };
 
@@ -369,7 +370,9 @@ export async function analyzeOneImage(
   }
 
   // Pixel path failed — online GET fallback only (offscreen decodeImageSrc).
-  const src = imageSrc(img);
+  // Prefer the largest CDN rendition (X name=small → name=large) so we do not
+  // score a compressed thumb that collapses generator artifacts to ~0.
+  const src = preferredImageSrc(img) || imageSrc(img);
   let fallbackError: unknown = null;
   if (src && isOnline()) {
     try {
