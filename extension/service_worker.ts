@@ -79,6 +79,27 @@ async function notifyOffscreenLoadFromStore(): Promise<void> {
   await sendToOffscreen({ type: 'LOAD_FROM_STORE' });
 }
 
+async function waitOffscreenSessionReady(timeoutMs = 180_000): Promise<boolean> {
+  const t0 = Date.now();
+  while (Date.now() - t0 < timeoutMs) {
+    try {
+      const status = await sendToOffscreen<{ ready?: boolean }>({
+        type: 'SESSION_STATUS',
+      });
+      if (status?.ready) return true;
+    } catch {
+      /* booting */
+    }
+    try {
+      await sendToOffscreen({ type: 'LOAD_FROM_STORE' });
+    } catch {
+      /* retry */
+    }
+    await new Promise((r) => setTimeout(r, 400));
+  }
+  return false;
+}
+
 async function broadcastModelsReady(): Promise<void> {
   let tabs: chrome.tabs.Tab[];
   try {
@@ -223,7 +244,10 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
 
   if (msg.type === 'ANALYZE_IMAGE') {
-    void sendToOffscreen(message as Record<string, unknown>)
+    void (async () => {
+      await waitOffscreenSessionReady(180_000);
+      return sendToOffscreen(message as Record<string, unknown>);
+    })()
       .then((result) => sendResponse(result))
       .catch((err: unknown) => {
         const raw = message as { scanId?: string; imageId?: string };

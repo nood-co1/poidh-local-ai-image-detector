@@ -8,7 +8,6 @@
  */
 
 import {
-  buildWasmPathsFromStore,
   isModelsReady,
   loadProductionOnnxBytes,
 } from '../src/artifact-store.js';
@@ -50,6 +49,31 @@ async function announceSessionReady(): Promise<void> {
  * Load production ONNX (and wasm path map when available) from OPFS/Cache.
  * Does not contact the weight host.
  */
+async function reportOrtError(err: unknown): Promise<void> {
+  const detail = err instanceof Error ? err.message : String(err);
+  try {
+    await chrome.storage.local.set({ lastOrtError: detail });
+  } catch {
+    /* ignore */
+  }
+}
+
+function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error(`${label} timeout ${ms}ms`)), ms);
+    p.then(
+      (v) => {
+        clearTimeout(t);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(t);
+        reject(e);
+      },
+    );
+  });
+}
+
 async function loadFromArtifactStore(): Promise<boolean> {
   const ready = await isModelsReady();
   if (!ready) {
@@ -57,24 +81,27 @@ async function loadFromArtifactStore(): Promise<boolean> {
   }
 
   const modelBytes = await loadProductionOnnxBytes();
-
-  // Prefer wasm blobs from the store; fall back to packaged extension wasm/.
-  let wasmOption: { wasmBaseUrl?: string } = {
+  // Packaged wasm/ only. OPFS blob wasmPaths have hung InferenceSession.create
+  // in real Chrome (session never became ready).
+  const opts = {
     wasmBaseUrl: wasmBaseUrl(),
+    executionProviders: ['wasm'],
   };
   try {
-    const { wasmPaths } = await buildWasmPathsFromStore();
-    const ort = await import('onnxruntime-web/webgpu');
-    // ORT accepts a filename → URL map for wasmPaths.
-    ort.env.wasm.wasmPaths = wasmPaths as unknown as typeof ort.env.wasm.wasmPaths;
-    ort.env.wasm.numThreads = 1;
-    wasmOption = {};
-  } catch {
-    const ort = await import('onnxruntime-web/webgpu');
-    configureOrtEnv(ort.env, wasmBaseUrl());
+    await withTimeout(
+      loadSession(modelBytes, opts),
+      90_000,
+      'ORT wasm loadSession',
+    );
+  } catch (err) {
+    await reportOrtError(err);
+    throw err;
   }
-
-  await loadSession(modelBytes, wasmOption);
+  try {
+    await chrome.storage.local.remove('lastOrtError');
+  } catch {
+    /* ignore */
+  }
   void announceSessionReady();
   return true;
 }

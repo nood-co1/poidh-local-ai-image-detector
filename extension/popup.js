@@ -47,6 +47,11 @@ function renderStatus(status) {
     statusEl.textContent = 'models not ready';
     shaEl.textContent = '';
     errorEl.textContent = status.error ? String(status.error) : '';
+    void chrome.storage.local.get('lastOrtError').then((extra) => {
+      if (extra.lastOrtError && errorEl && !status.ready) {
+        errorEl.textContent = String(extra.lastOrtError);
+      }
+    });
     startBtn.hidden = false;
     startBtn.disabled = false;
     startBtn.textContent = 'Start setup';

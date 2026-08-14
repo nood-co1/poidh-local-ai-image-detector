@@ -480,9 +480,13 @@ function finalizeFromResponse(
     };
   }
 
-  // ANALYZE_ERROR → unavailable (fail closed). Do not cache MODEL_MISSING so
-  // a later setup can rescore; explicit SCAN_PAGE always re-queries offscreen.
-  badge.setState({ kind: 'unavailable', reason: response.code });
+  // ANALYZE_ERROR → unavailable (fail closed). MODEL_MISSING stays loading
+  // so a later SESSION_READY rescan is obvious; do not cache it.
+  if (response.code === 'MODEL_MISSING') {
+    badge.setState({ kind: 'loading' });
+  } else {
+    badge.setState({ kind: 'unavailable', reason: response.code });
+  }
   if (response.code && response.code !== 'MODEL_MISSING') {
     const entry: CacheEntry = {
       kind: 'unavailable',
