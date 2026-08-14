@@ -141,6 +141,7 @@ function makeHandle(
       badge.dataset['state'] = 'loading';
       delete badge.dataset['label'];
       badge.textContent = '…';
+      badge.removeAttribute('title');
       return;
     }
     if (state.kind === 'unavailable') {
@@ -148,15 +149,14 @@ function makeHandle(
       delete badge.dataset['label'];
       // Never show "real" for skips/errors (R-SKIP-NOT-REAL).
       badge.textContent = 'unavailable';
-      if (state.reason) {
-        const hint =
-          state.reason === 'MODEL_MISSING'
-            ? 'Model not loaded — open the extension popup and click Start setup'
-            : state.reason === 'skip_cross_origin'
-              ? 'Could not read this image (cross-origin). Hover a same-origin photo or wait for setup.'
-              : state.reason;
-        badge.title = hint;
-      }
+      const hint =
+        state.reason === 'MODEL_MISSING'
+          ? 'Model not loaded — open the extension popup and click Start setup'
+          : state.reason === 'skip_cross_origin'
+            ? 'Could not read this image (cross-origin). Hover a same-origin photo or wait for setup.'
+            : state.reason;
+      // Keep the AC-ERR word in both visible text and the diagnostic tooltip.
+      badge.title = hint ? `unavailable — ${hint}` : 'unavailable';
       return;
     }
     badge.dataset['state'] = 'score';

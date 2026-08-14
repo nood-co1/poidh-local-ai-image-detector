@@ -78,6 +78,21 @@ describe('offscreen MV3 wiring', () => {
     expect(content).toMatch(/processImage/);
   });
 
+  it('deduplicates ORT loads and exposes session failures to the popup', () => {
+    const offscreen = readFileSync(join(root, 'extension/offscreen.ts'), 'utf8');
+    const popup = readFileSync(join(root, 'extension/popup.js'), 'utf8');
+    const content = readFileSync(join(root, 'extension/content.ts'), 'utf8');
+    const badge = readFileSync(join(root, 'extension/badge.ts'), 'utf8');
+
+    expect(offscreen).toMatch(/artifactStoreLoad/);
+    expect(offscreen).toMatch(/ensureLoadFromArtifactStore/);
+    expect(offscreen).toMatch(/lastOrtError/);
+    expect(popup).toMatch(/SESSION_STATUS/);
+    expect(popup).toMatch(/Loading model/);
+    expect(content).toMatch(/response\.error/);
+    expect(badge).toMatch(/unavailable.*hint|hint.*unavailable/s);
+  });
+
   it('manifest registers content script for page pixel scan (2.3)', () => {
     const manifest = readFileSync(join(root, 'extension/manifest.json'), 'utf8');
     const json = JSON.parse(manifest) as {

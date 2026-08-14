@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   clearSession,
@@ -68,6 +68,7 @@ function makeMockSession(logit: number): {
 }
 
 afterEach(async () => {
+  vi.unstubAllGlobals();
   await clearSession();
 });
 
@@ -170,6 +171,28 @@ describe('mock session run (preprocess + sigmoid + dispose)', () => {
       expect(result.label).toBe('real'); // 0.5 < THRESHOLD 0.65
       expect(result.skip_reason).toBeNull();
     }
+  });
+
+  it('preserves GET HTTP failures in ANALYZE_ERROR diagnostics', async () => {
+    const { session } = makeMockSession(0);
+    setSessionForTests(session);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response('', { status: 403 })),
+    );
+
+    const result = await handleAnalyzeImage({
+      type: 'ANALYZE_IMAGE',
+      scanId: 'http-failure',
+      imageId: 'encrypted-thumb',
+      src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:test',
+    });
+
+    expect(result).toMatchObject({
+      type: 'ANALYZE_ERROR',
+      code: 'DECODE',
+      error: 'DECODE: HTTP 403',
+    });
   });
 });
 

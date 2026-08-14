@@ -25,6 +25,7 @@ import {
 
 const WASM_DIR = 'wasm/';
 const TARGET = 'offscreen' as const;
+let artifactStoreLoad: Promise<boolean> | null = null;
 
 /** Optional field so SW and content messages do not loop. */
 interface TargetedMessage {
@@ -106,13 +107,26 @@ async function loadFromArtifactStore(): Promise<boolean> {
   return true;
 }
 
+/** Share one expensive ORT create across boot, setup, and page scan requests. */
+async function ensureLoadFromArtifactStore(): Promise<boolean> {
+  if (isSessionReady()) return true;
+  if (artifactStoreLoad) return artifactStoreLoad;
+
+  artifactStoreLoad = loadFromArtifactStore();
+  try {
+    return await artifactStoreLoad;
+  } finally {
+    artifactStoreLoad = null;
+  }
+}
+
 /**
  * Attempt artifact-store load first; fall back to on-package model URL
  * (expected to fail until 2.2 setup has run).
  */
 async function tryLoadDefaultModel(): Promise<void> {
   try {
-    const ok = await loadFromArtifactStore();
+    const ok = await ensureLoadFromArtifactStore();
     if (ok) return;
   } catch {
     await clearSession();
@@ -141,15 +155,27 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
 
   if (msg.type === 'SESSION_STATUS') {
-    sendResponse({
-      type: 'SESSION_STATUS_RESULT',
-      ready: isSessionReady(),
-    });
-    return false;
+    const ready = isSessionReady();
+    void chrome.storage.local
+      .get('lastOrtError')
+      .then((stored) => {
+        sendResponse({
+          type: 'SESSION_STATUS_RESULT',
+          ready,
+          error:
+            !ready && typeof stored.lastOrtError === 'string'
+              ? stored.lastOrtError
+              : undefined,
+        });
+      })
+      .catch(() => {
+        sendResponse({ type: 'SESSION_STATUS_RESULT', ready });
+      });
+    return true;
   }
 
   if (msg.type === 'LOAD_FROM_STORE') {
-    void loadFromArtifactStore()
+    void ensureLoadFromArtifactStore()
       .then((ok) => {
         sendResponse({
           type: 'LOAD_MODEL_RESULT',
@@ -178,7 +204,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       // Prefer store when ready (never re-hit weight host for the default path).
       if (!modelUrl || modelUrl === chrome.runtime.getURL(DEFAULT_MODEL_URL)) {
         try {
-          const ok = await loadFromArtifactStore();
+          const ok = await ensureLoadFromArtifactStore();
           if (ok) {
             sendResponse({ type: 'LOAD_MODEL_RESULT', ok: true });
             return;

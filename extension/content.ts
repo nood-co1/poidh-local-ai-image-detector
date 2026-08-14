@@ -44,6 +44,7 @@ interface AnalyzeResultLike {
   label?: string;
   skip_reason?: string | null;
   code?: string;
+  error?: string;
 }
 
 interface ScanPageResult {
@@ -253,6 +254,11 @@ function isOnline(): boolean {
   return typeof navigator === 'undefined' ? true : navigator.onLine !== false;
 }
 
+function errorDetail(err: unknown): string {
+  const detail = err instanceof Error ? err.message : String(err);
+  return detail.slice(0, 240);
+}
+
 function ensureBadge(img: HTMLImageElement): BadgeHandle {
   let handle = badges.get(img);
   if (!handle || !handle.host.isConnected) {
@@ -349,7 +355,7 @@ export async function analyzeOneImage(
 
       return finalizeFromResponse(img, response, scanId, imageId, key, quickKey);
     } catch (err) {
-      const detail = err instanceof Error ? err.message : String(err);
+      const detail = errorDetail(err);
       // Transient / transport failure — do not cache (allows rescan after recovery).
       badge.setState({ kind: 'unavailable', reason: detail });
       return {
@@ -363,6 +369,7 @@ export async function analyzeOneImage(
 
   // Pixel path failed — online GET fallback only (offscreen decodeImageSrc).
   const src = imageSrc(img);
+  let fallbackError: unknown = null;
   if (src && isOnline()) {
     try {
       const response = await enqueueAnalyze(
@@ -384,20 +391,27 @@ export async function analyzeOneImage(
         quickKey,
         quickKey,
       );
-    } catch {
+    } catch (err) {
+      fallbackError = err;
       // fall through to skip_cross_origin
     }
   }
 
   // Both displayed-pixel and (when online) GET failed → skip_cross_origin.
   // Never coerce to real. Cache for badge restore only (not ANALYZE short-circuit).
-  void pixelError;
+  const failures = [
+    pixelError ? `pixel decode: ${errorDetail(pixelError)}` : '',
+    fallbackError ? `GET fallback: ${errorDetail(fallbackError)}` : '',
+  ].filter(Boolean);
+  const badgeReason = failures.length
+    ? `skip_cross_origin — ${failures.join('; ')}`
+    : 'skip_cross_origin';
   const entry: CacheEntry = {
     kind: 'unavailable',
     skip_reason: 'skip_cross_origin',
   };
   resultCache.set(quickKey, entry);
-  badge.setState({ kind: 'unavailable', reason: 'skip_cross_origin' });
+  badge.setState({ kind: 'unavailable', reason: badgeReason });
   return {
     type: 'ANALYZE_RESULT',
     scanId,
@@ -424,7 +438,7 @@ function finalizeFromResponse(
   const badge = ensureBadge(img);
 
   if (!response || typeof response !== 'object' || !response.type) {
-    badge.setState({ kind: 'unavailable' });
+    badge.setState({ kind: 'unavailable', reason: 'INFER: empty response' });
     return {
       type: 'ANALYZE_ERROR',
       scanId,
@@ -485,12 +499,17 @@ function finalizeFromResponse(
   if (response.code === 'MODEL_MISSING') {
     badge.setState({ kind: 'loading' });
   } else {
-    badge.setState({ kind: 'unavailable', reason: response.code });
+    const detail = response.error ? errorDetail(response.error) : '';
+    const reason = detail
+      ? `${response.code ?? 'INFER'} — ${detail}`
+      : response.code;
+    badge.setState({ kind: 'unavailable', reason });
   }
   if (response.code && response.code !== 'MODEL_MISSING') {
+    const detail = response.error ? errorDetail(response.error) : '';
     const entry: CacheEntry = {
       kind: 'unavailable',
-      skip_reason: response.code,
+      skip_reason: detail ? `${response.code} — ${detail}` : response.code,
     };
     resultCache.set(key, entry);
     resultCache.set(quickKey, entry);

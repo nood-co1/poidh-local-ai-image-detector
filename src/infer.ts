@@ -61,6 +61,8 @@ export interface AnalyzeErrorMessage {
   scanId: string;
   imageId: string;
   code: ErrorCode;
+  /** Actionable local failure detail (for popup/badge diagnostics). */
+  error?: string;
 }
 
 export type InferMessage =
@@ -70,7 +72,7 @@ export type InferMessage =
   | { type: 'LOAD_MODEL'; modelUrl: string }
   | { type: 'LOAD_MODEL_RESULT'; ok: boolean; error?: string }
   | { type: 'SESSION_STATUS' }
-  | { type: 'SESSION_STATUS_RESULT'; ready: boolean };
+  | { type: 'SESSION_STATUS_RESULT'; ready: boolean; error?: string };
 
 // ---------------------------------------------------------------------------
 // Session abstraction (real ORT or unit-test mock)
@@ -460,12 +462,14 @@ export async function handleAnalyzeImage(
   let rgb: RgbImage;
   try {
     rgb = await resolveRgb(msg);
-  } catch {
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
     return {
       type: 'ANALYZE_ERROR',
       scanId,
       imageId,
       code: 'DECODE',
+      error: detail,
     };
   }
 
@@ -486,13 +490,16 @@ export async function handleAnalyzeImage(
         scanId,
         imageId,
         code: 'MODEL_MISSING',
+        error: err.message,
       };
     }
+    const detail = err instanceof Error ? err.message : String(err);
     return {
       type: 'ANALYZE_ERROR',
       scanId,
       imageId,
       code: 'INFER',
+      error: detail,
     };
   }
 }

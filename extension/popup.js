@@ -27,7 +27,7 @@ function errText(err) {
 }
 
 /**
- * @param {{ ready?: boolean, sha256?: string|null, sha256Short?: string|null, error?: string }} status
+ * @param {{ ready?: boolean, modelsReady?: boolean, sha256?: string|null, sha256Short?: string|null, error?: string }} status
  */
 function renderStatus(status) {
   if (!statusEl || !shaEl || !errorEl || !startBtn || !retryBtn) return;
@@ -44,19 +44,16 @@ function renderStatus(status) {
     retryBtn.disabled = false;
     retryBtn.textContent = 'Re-verify';
   } else {
-    statusEl.textContent = 'models not ready';
-    shaEl.textContent = '';
+    const modelsReady = Boolean(status.modelsReady);
+    statusEl.textContent = modelsReady ? 'Loading model…' : 'models not ready';
+    const sha = status.sha256Short || status.sha256 || '';
+    shaEl.textContent = modelsReady && sha ? `SHA256 ${sha}` : '';
     errorEl.textContent = status.error ? String(status.error) : '';
-    void chrome.storage.local.get('lastOrtError').then((extra) => {
-      if (extra.lastOrtError && errorEl && !status.ready) {
-        errorEl.textContent = String(extra.lastOrtError);
-      }
-    });
-    startBtn.hidden = false;
-    startBtn.disabled = false;
+    startBtn.hidden = modelsReady;
+    startBtn.disabled = modelsReady;
     startBtn.textContent = 'Start setup';
-    // Show Retry when a previous attempt failed.
-    const showRetry = Boolean(status.error);
+    // A verified artifact with a failed session is also a Retry state.
+    const showRetry = modelsReady || Boolean(status.error);
     retryBtn.hidden = !showRetry;
     retryBtn.disabled = false;
     retryBtn.textContent = 'Retry';
@@ -113,8 +110,42 @@ function setBusy(busy) {
 
 async function refreshStatus() {
   try {
-    const status = await chrome.runtime.sendMessage({ type: 'ARTIFACT_STATUS' });
-    renderStatus(status ?? { ready: false });
+    const artifacts = await chrome.runtime.sendMessage({
+      type: 'ARTIFACT_STATUS',
+    });
+    if (!artifacts || !artifacts.ready) {
+      renderStatus(artifacts ?? { ready: false });
+      return;
+    }
+
+    const startedAt = Date.now();
+    while (Date.now() - startedAt < 90_000) {
+      const session = await chrome.runtime.sendMessage({
+        type: 'SESSION_STATUS',
+      });
+      if (session && session.ready) {
+        renderStatus({ ...artifacts, ready: true });
+        return;
+      }
+      renderStatus({
+        ...artifacts,
+        ready: false,
+        modelsReady: true,
+        error: session && session.error ? String(session.error) : '',
+      });
+      await new Promise((r) => setTimeout(r, 400));
+    }
+
+    const stored = await chrome.storage.local.get('lastOrtError');
+    renderStatus({
+      ...artifacts,
+      ready: false,
+      modelsReady: true,
+      error:
+        typeof stored.lastOrtError === 'string'
+          ? stored.lastOrtError
+          : 'weights verified but the on-device session did not start — click Retry',
+    });
   } catch (err) {
     renderStatus({ ready: false, error: errText(err) });
   }
@@ -157,10 +188,16 @@ async function runSetup(force) {
       await new Promise((r) => setTimeout(r, 400));
     }
     if (!sessionReady) {
+      const stored = await chrome.storage.local.get('lastOrtError');
       renderStatus({
         ready: false,
+        modelsReady: true,
+        sha256: result.sha256,
+        sha256Short: result.sha256Short,
         error:
-          'weights saved but the on-device session did not start — click Retry',
+          typeof stored.lastOrtError === 'string'
+            ? stored.lastOrtError
+            : 'weights saved but the on-device session did not start — click Retry',
       });
       return;
     }
